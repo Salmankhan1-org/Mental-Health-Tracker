@@ -22,9 +22,10 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { ApiErrorResponse } from '@/types/types'
 import { clearUser } from '@/features/users/authSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { CiLogout } from 'react-icons/ci'
 import { useLogout } from '@/hooks/use-logout'
+import { RootState } from '@/redux/store'
 
 interface CounsellorTopBarProps {
   onToggleSidebar: () => void
@@ -64,6 +65,7 @@ export function CounsellorTopBar({ onToggleSidebar }: CounsellorTopBarProps) {
   const pathname = usePathname()
   const pageTitle = pageNames[pathname] || 'Dashboard'
   const logout = useLogout();
+  const {user} = useSelector((state:RootState)=>state?.auth);
 
   return (
     <header className="border-b border-border bg-card">
@@ -140,21 +142,21 @@ export function CounsellorTopBar({ onToggleSidebar }: CounsellorTopBarProps) {
             <DropdownMenuTrigger asChild>
               <div className="gap-2 flex items-center cursor-pointer">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" />
+                  <AvatarImage src={user?.profileImage || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"} />
                   <AvatarFallback>DR</AvatarFallback>
                 </Avatar>
-                <span className="hidden text-sm font-medium sm:inline">Dr. Smith</span>
+                <span className="hidden text-sm font-medium sm:inline">{user?.name || "Dr. Sarah Smith"}</span>
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <div className="flex items-center gap-3 p-2">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" />
+                  <AvatarImage src={user?.profileImage || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"} />
                   <AvatarFallback>DR</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-medium">Dr. Sarah Smith</p>
-                  <p className="text-xs text-muted-foreground">Clinical Psychologist</p>
+                  <p className="text-sm font-medium">{user?.name || "Dr. Sarah Smith"}</p>
+                  {/* <p className="text-xs text-muted-foreground">Clinical Psychologist</p> */}
                 </div>
               </div>
               <DropdownMenuSeparator />

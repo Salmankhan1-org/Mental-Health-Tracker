@@ -20,7 +20,7 @@ export function useLogout() {
 
       if(response?.data?.success){
         dispatch(clearUser());
-        router.push('/accounts/auth');
+        router.push('/accounts/auth/login');
         toast.success(response.data.message);
       }
     } catch (error: unknown) {

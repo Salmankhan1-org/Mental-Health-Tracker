@@ -1,11 +1,13 @@
 import { Navbar } from "@/components/common/navbar"
-import { HeroSection } from "@/components/student/landing/hero-section"
-import { HowItWorksSection } from "@/components/student/landing/how-it-works-section"
-import { FeaturesSection } from "@/components/student/landing/features-section"
-import { CtaSection } from "@/components/student/landing/cta-section"
 import { Footer } from "@/components/common/footer"
-import UserFeedBackSection from "@/components/student/landing/user-feedback-section"
-import FeedbackMarquee from "@/components/student/landing/user-reviews"
+import dynamic from "next/dynamic"
+
+const HeroSection = dynamic(()=>import('@/components/student/landing/hero-section'))
+const HowItWorksSection = dynamic(()=>import('@/components/student/landing/how-it-works-section'))
+const FeaturesSection = dynamic(()=>import('@/components/student/landing/features-section'))
+const CtaSection = dynamic(()=>import('@/components/student/landing/cta-section'))
+const UserFeedBackSection = dynamic(()=>import('@/components/student/landing/user-feedback-section'))
+const FeedbackMarquee = dynamic(()=>import('@/components/student/landing/user-reviews'))
 
 export default function Home() {
   return (

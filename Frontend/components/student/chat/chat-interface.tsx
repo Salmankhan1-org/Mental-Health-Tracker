@@ -31,7 +31,7 @@ type Message = {
   content: string
 }
 
-export function ChatInterface() {
+export default function ChatInterface() {
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false);

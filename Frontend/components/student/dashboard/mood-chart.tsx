@@ -12,7 +12,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts"
-import { MoodChartSkeleton } from "./mood-chart-skeleton"
+import  MoodChartSkeleton  from "./mood-chart-skeleton"
 
 // const moodData = [
 //   { day: "Mon", mood: 3.5, stress: 4.2 },
@@ -30,32 +30,8 @@ export interface WeeklyMoodData {
   stress: number | null
 }
 
-export function MoodChart() {
-  const [moodData, setMoodData] = useState<WeeklyMoodData[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchWeeklyMoodData = async()=>{
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/mood/weekly/mood/chart`,{
-        withCredentials: true
-      });
-
-      if(response?.data.success){
-        setMoodData(response.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(()=>{
-    setLoading(true);
-    const loadData = async()=>{
-      await fetchWeeklyMoodData();
-      setLoading(false);
-    }
-    loadData();
-  },[]);
+export default function MoodChart({moodData, loading}:{moodData:WeeklyMoodData[], loading:boolean}) {
+  
 
   if(loading) return <MoodChartSkeleton/>
 

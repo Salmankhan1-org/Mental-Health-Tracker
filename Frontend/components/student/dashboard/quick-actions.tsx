@@ -48,7 +48,7 @@ const actions = [
   },
 ]
 
-export function QuickActions() {
+export default function QuickActions() {
   return (
     <Card>
       <CardHeader>

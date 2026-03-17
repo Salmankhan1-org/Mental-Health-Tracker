@@ -9,6 +9,9 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { ApiErrorResponse } from '@/types/types'
+import Link from 'next/link'
+import { useDispatch } from 'react-redux'
+import { setUser } from '@/features/users/authSlice'
 
 interface Payload{
     email : string,
@@ -22,6 +25,7 @@ export function LoginForm() {
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,7 +42,15 @@ export function LoginForm() {
         })
 
         if(response?.data?.success){
-            router.push('/dashboard');
+            const userData = response.data.data;
+            dispatch(setUser(userData))
+            if (userData.role === "student") {
+              router.push("/student/dashboard")
+            } else if (userData.role === "counsellor") {
+              router.push("/counsellor/dashboard")
+            } else if (userData.role === "admin") {
+              router.push("/admin/dashboard")
+            }
             toast.success(response?.data?.message);
         }
     }catch(error : unknown){
@@ -56,7 +68,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md space-y-8">
+    <div className="w-full max-w-md space-y-4">
       {/* Header */}
       <div className="space-y-3 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -168,8 +180,8 @@ export function LoginForm() {
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-border" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+        <div className="relative flex justify-center text-xs ">
+          <span className="bg-white px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
 

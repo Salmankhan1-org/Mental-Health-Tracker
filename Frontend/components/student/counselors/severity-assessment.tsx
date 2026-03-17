@@ -53,7 +53,7 @@ const questions = [
 
 type SeverityLevel = "low" | "moderate" | "high" | null
 
-export function SeverityAssessment() {
+export default function SeverityAssessment() {
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [result, setResult] = useState<SeverityLevel>(null)
   const [currentStep, setCurrentStep] = useState(0)

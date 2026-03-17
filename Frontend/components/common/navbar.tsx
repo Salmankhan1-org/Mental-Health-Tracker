@@ -81,13 +81,13 @@ export function Navbar() {
                 size="sm"
                 asChild
               >
-              <Link href={'/auth'}>
+              <Link href={'/accounts/auth/login'}>
                 Sign In
               </Link>
               </Button>
             )}
           <Button size="sm" asChild>
-            <Link href="/dashboard">Get Started</Link>
+            <Link href="/student/dashboard">Get Started</Link>
           </Button>
         </div>
 

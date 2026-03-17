@@ -1,14 +1,16 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Shield, Brain, MessageCircleHeart } from "lucide-react"
 
-export function HeroSection() {
+function HeroSection() {
   return (
     <section className="relative overflow-hidden px-4 pb-20 pt-16 lg:px-8 lg:pb-32 lg:pt-24">
       {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/4 rounded-full bg-accent/5 blur-3xl" />
+        <div className="absolute left-1/2 top-0 h-150 w-150 -translate-x-1/2 -translate-y-1/3 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-100 w-100 translate-x-1/4 rounded-full bg-accent/5 blur-3xl" />
       </div>
 
       <div className="mx-auto max-w-7xl">
@@ -35,13 +37,17 @@ export function HeroSection() {
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
             <Button size="lg" className="gap-2 px-8" asChild>
-              <Link href="/dashboard">
+              <Link href="/student/dashboard">
                 Start Your Journey
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="gap-2 px-8" asChild>
-              <Link href="/chat">Talk to AI Companion</Link>
+              <Link href="/student/chat">Talk to AI Companion</Link>
+            </Button>
+
+            <Button size={'lg'} className="gap-2 px-8" asChild>
+              <Link href={'/student/apply-to-become-counsellor'}>Become Counsellor</Link>
             </Button>
           </div>
 
@@ -88,3 +94,7 @@ function FeaturePill({
     </div>
   )
 }
+
+
+
+export default HeroSection;

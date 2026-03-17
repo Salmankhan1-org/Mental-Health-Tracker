@@ -16,7 +16,14 @@ const moods = [
   { value: 1, label: "Struggling", color: "bg-destructive" },
 ]
 
-export function MoodCheckin() {
+
+export interface MoodCheckInProps{
+  fetchWeeklyMoodData: ()=>void,
+  fetchRecentActivities: ()=>void,
+  fetchWeeklySentimentData: ()=>void,
+  fetchRecentEmotions: ()=>void
+}
+export default function MoodCheckin({fetchWeeklyMoodData,fetchRecentActivities,fetchWeeklySentimentData,fetchRecentEmotions}:MoodCheckInProps) {
   const [selectedMood, setSelectedMood] = useState<string | null>(null)
   const [note, setNote] = useState("")
   const [submitted, setSubmitted] = useState(false);
@@ -44,6 +51,10 @@ export function MoodCheckin() {
         setSubmitted(true)
         setSelectedMood(null)
         setNote("")
+        fetchWeeklyMoodData()
+        fetchWeeklySentimentData()
+        fetchRecentActivities()
+        fetchRecentEmotions()
         toast.success(response?.data?.message)
       }
     } catch (error: any) {

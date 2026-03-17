@@ -9,6 +9,9 @@ const UserRoutes = require("./routes/User/routes.user")
 const MoodCheckInRoutes = require("./routes/MoodCheckIn/mood.checkin.routes");
 const DailyWellnessTipRoutes = require('./routes/DailyWellnessTip/daily.wellness.tip.routes');
 const UserFeedbackRoutes = require('./routes/Feedback/feeback.routes');
+const CounsellorsRoutes = require('./routes/Counsellors/routes.counsellor');
+const AvailabilityRoutes = require('./routes/Counsellors/counsellor.availability.routes');
+const GlobalErrorHandler = require("./middlewares/error.handler");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,6 +34,11 @@ app.use('/api/v1/users', UserRoutes );
 app.use('/api/v1/mood',MoodCheckInRoutes);
 app.use('/api/v1/wellness',DailyWellnessTipRoutes);
 app.use('/api/v1/feedback', UserFeedbackRoutes);
+app.use('/api/v1/counsellors', CounsellorsRoutes)
+app.use('/api/v1/availability', AvailabilityRoutes);
+
+
+app.use(GlobalErrorHandler);
 
 app.listen(PORT, () =>{
     connectDB();

@@ -5,7 +5,7 @@ const User = require("../../models/userModel");
 
 exports.CreateUserAccountController = async (request, response) => {
     try {
-        const {name, email, picture} = request.body;
+        const {name, email,picture} = request.body;
 
         let user = await User.findOne({email});
 
@@ -14,7 +14,7 @@ exports.CreateUserAccountController = async (request, response) => {
         if(user){
             user.isEmailVerified = true;
         }else{
-            let password = "login#through#google"
+            let password = 'login#through#google'
             const hashedPassword = await bcrypt.hash(password,10);
             user = new User({name,email,password:hashedPassword,isEmailVerified:true,profileImage:picture});
         }

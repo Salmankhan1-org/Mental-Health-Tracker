@@ -23,7 +23,7 @@ exports.GetUsersFeedbacks = async(request, response)=>{
             error:[
                 {
                     field: 'popup',
-                    error: error?.message
+                    message: error?.message
                 }
             ],
             message: ''

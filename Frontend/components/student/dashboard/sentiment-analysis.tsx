@@ -13,7 +13,7 @@ import {
   Cell,
   Tooltip,
 } from "recharts"
-import { SentimentAnalysisSkeleton } from "./sentiment-analysis-skeleton"
+import  SentimentAnalysisSkeleton  from "./sentiment-analysis-skeleton"
 
 // const sentimentData = [
 //   { name: "Positive", value: 42, color: "var(--color-chart-1)" },
@@ -31,56 +31,16 @@ import { SentimentAnalysisSkeleton } from "./sentiment-analysis-skeleton"
 //   { label: "Grateful", intensity: 0.9 },
 // ]
 
-export function SentimentAnalysis() {
-  const [sentimentData, setSentimentData] = useState<SentimentData[]>([]);
-  const [recentEmotions, setRecentEmotions] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchWeeklySentimentData = async()=>{
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/mood/weekly/sentiment/status`,{
-        withCredentials: true
-      });
-
-      if(response.data.success){
-        setSentimentData(response.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
 
-  const fetchRecentEmotions = async()=>{
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/mood/emotions/today`,{
-        withCredentials: true
-      });
+export interface SentimentAnalysisProps{
+  sentimentData: SentimentData[],
+  recentEmotions: string[],
+  loading: boolean
+}
 
-      if(response.data.success){
-        setRecentEmotions(response.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-
-
-
-
-  useEffect(() => {
-    const loadData = async () => {
-      await Promise.all([
-        fetchWeeklySentimentData(),
-        fetchRecentEmotions(),
-      ])
-      setLoading(false)
-    }
-
-    loadData()
-  }, []);
-
+export default function SentimentAnalysis({sentimentData, recentEmotions,loading}:SentimentAnalysisProps) {
+  
 
   if(loading) return <SentimentAnalysisSkeleton/>
 

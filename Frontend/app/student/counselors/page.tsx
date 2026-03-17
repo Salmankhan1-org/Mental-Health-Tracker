@@ -1,14 +1,16 @@
 import { Navbar } from "@/components/common/navbar"
 import { Footer } from "@/components/common/footer"
-import { CounselorList } from "@/components/student/counselors/counselor-list"
-import { SeverityAssessment } from "@/components/student/counselors/severity-assessment"
 import { Phone, Shield, Clock } from "lucide-react"
+import dynamic from "next/dynamic"
 
 export const metadata = {
   title: "Find Counselors - MindBridge",
   description:
     "Connect with licensed campus counselors and access professional mental health support.",
 }
+
+const CounselorList = dynamic(()=>import('@/components/student/counselors/counselor-list'));
+const SeverityAssessment = dynamic(()=>import("@/components/student/counselors/severity-assessment"));
 
 export default function CounselorsPage() {
   return (

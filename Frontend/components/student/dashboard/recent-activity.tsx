@@ -52,25 +52,8 @@ import { formatDistanceToNow } from "date-fns";
 //   },
 // ]
 
-export function RecentActivity() {
-  const [activities, setActivities] = useState<RecentActivity[]>([]);
-  const fetchRecentActivities = async()=>{
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/users/logs`,{
-        withCredentials: true
-      });
-
-      if(response.data?.success){
-        setActivities(response.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(()=>{
-    fetchRecentActivities();
-  },[]);
+export default function RecentActivity({activities}:{activities:RecentActivity[]}) {
+  
   return (
     <Card>
       <CardHeader>

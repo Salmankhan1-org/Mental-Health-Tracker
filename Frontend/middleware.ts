@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
 
   // Public routes
   if (
-    pathname.startsWith("/accounts/auth")
+    pathname.startsWith("/accounts")
     // pathname.startsWith("/register") ||
     // pathname.startsWith("/api")
   ) {
@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
 
   // If no token → redirect to login
   if (!token) {
-    return NextResponse.redirect(new URL("/accounts/auth", request.url))
+    return NextResponse.redirect(new URL("/accounts/auth/login", request.url))
   }
 
   try {
@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   } catch (error) {
     // Invalid token
-    return NextResponse.redirect(new URL("/login", request.url))
+    return NextResponse.redirect(new URL("/accounts/auth/login", request.url))
   }
 }
 

@@ -105,7 +105,7 @@ import { Progress } from "@/components/ui/progress"
 import { TrendingUp, TrendingDown, Brain, Activity } from "lucide-react"
 import { Skeleton } from "../../ui/skeleton"
 
-interface Stats {
+export interface Stats {
   overall: number
   improving: boolean | null
   emotionalBalance: number
@@ -113,30 +113,13 @@ interface Stats {
   stressChange: number | null
 }
 
-export function WellbeingScore() {
-  const [stats, setStats] = useState<Stats | null>(null)
-  const [loading, setLoading] = useState(true)
+export interface WellBeingScoreProps{
+  stats: Stats | null,
+  loading: boolean
+}
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_HOST}/mood/weekly/status`,
-          { withCredentials: true }
-        )
-
-        if(res.data.success){
-          setStats(res.data.data);
-        }
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchStats()
-  }, [])
+export default function WellbeingScore({stats,loading}:WellBeingScoreProps) {
+  
 
   if (loading) {
     return (

@@ -31,7 +31,7 @@ const steps = [
   },
 ]
 
-export function HowItWorksSection() {
+function HowItWorksSection() {
   return (
     <section className="px-4 py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
@@ -72,3 +72,5 @@ export function HowItWorksSection() {
     </section>
   )
 }
+
+export default HowItWorksSection;

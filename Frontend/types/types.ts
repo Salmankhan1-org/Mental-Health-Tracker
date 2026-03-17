@@ -60,3 +60,48 @@ export interface Feedback {
     avatar: string
   }
 }
+
+export interface Counsellor {
+  _id: string
+  title: string
+  bio: string
+  location: string
+  virtualSessions: boolean
+  expertiseTags: string[]
+  rating: {
+    average: number
+    count: number
+  }
+  user: {
+    _id: string,
+    name: string
+    profileImage?: string
+  },
+  yearsOfExperience: number
+}
+
+
+export interface CounsellorReview{
+  _id: string
+   user: {
+    _id: string
+    name: string
+    profileImage?: string
+  },
+  comment: string,
+  rating: number,
+  createdAt: string
+}
+
+export interface ReviewDistribution{
+  rating : number,
+  count : number,
+  percentage : number
+}
+
+
+export interface CounsellorReviewStats{
+  averageRating : number,
+  totalReviews : number,
+  distribution: ReviewDistribution[]
+}
