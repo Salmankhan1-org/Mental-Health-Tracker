@@ -40,7 +40,7 @@ exports.UpsertNewAvailabilityController = async (request, response) => {
 
     await redisClient.del(redisKey);
 
-    await LogController(request, 'api::info','success','New Schedule has been created');
+    await LogController(request, 'New Schedule','success','New Schedule has been created');
 
     return response.status(201).json({
         statusCode: 201,

@@ -12,6 +12,10 @@ const UserFeedbackRoutes = require('./routes/Feedback/feeback.routes');
 const CounsellorsRoutes = require('./routes/Counsellors/routes.counsellor');
 const AvailabilityRoutes = require('./routes/Counsellors/counsellor.availability.routes');
 const GlobalErrorHandler = require("./middlewares/error.handler");
+const AppointmentRoutes = require('./routes/Counsellors/counsellor.appointment.routes');
+const { CancelExpiredAppointments } = require("./cron-jobs/cancel.expire.appointments");
+const { AppointmentReminderCron } = require("./cron-jobs/appointment.reminder");
+const { AutoCompleteAppointments } = require("./cron-jobs/auto.complete.appointment");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -36,7 +40,13 @@ app.use('/api/v1/wellness',DailyWellnessTipRoutes);
 app.use('/api/v1/feedback', UserFeedbackRoutes);
 app.use('/api/v1/counsellors', CounsellorsRoutes)
 app.use('/api/v1/availability', AvailabilityRoutes);
+app.use('/api/v1/appointment',AppointmentRoutes);
 
+
+// CRON Jobs
+CancelExpiredAppointments();
+AppointmentReminderCron();
+AutoCompleteAppointments();
 
 app.use(GlobalErrorHandler);
 

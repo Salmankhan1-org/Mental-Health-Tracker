@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background ">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Subtle gradient blobs */}

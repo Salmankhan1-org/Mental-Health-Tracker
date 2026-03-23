@@ -7,24 +7,43 @@ import { cn } from "@/lib/utils"
 interface LoadingButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean
+  loadingText?: string
+  icon?: React.ReactNode
+  loadingIcon?: React.ReactNode
+  disabledConditions?: boolean[] // multiple conditions
   children: React.ReactNode
 }
 
 export function LoadingButton({
   loading = false,
-  children,
+  loadingText,
+  icon,
+  loadingIcon,
   className,
   disabled,
+  disabledConditions = [],
+  children,
   ...props
 }: LoadingButtonProps) {
+
+  const isDisabled =
+    loading ||
+    disabled ||
+    disabledConditions.some(Boolean)
+
   return (
     <Button
-      className={cn("gap-2", className)}
-      disabled={loading || disabled}
+      className={cn("flex items-center gap-2", className)}
+      disabled={isDisabled}
       {...props}
     >
-      {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-      {children}
+      {/* Icon */}
+      {loading
+        ? (loadingIcon || <Loader2 className="h-4 w-4 animate-spin" />)
+        : icon}
+
+      {/* Text */}
+      {loading && loadingText ? loadingText : children}
     </Button>
   )
 }

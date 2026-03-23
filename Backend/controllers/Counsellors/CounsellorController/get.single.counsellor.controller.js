@@ -6,7 +6,7 @@ exports.GetSingleCounsellorController = async(request,response)=>{
 
         const CounsellorId = GetCounsellorId(request);
 
-        const counsellor = await Counsellor.findById(CounsellorId).populate('user','name profileImage');
+        const counsellor = await Counsellor.findById(CounsellorId).populate('user','name email profileImage');
 
         if(counsellor._id){
             return response.status(200).json({

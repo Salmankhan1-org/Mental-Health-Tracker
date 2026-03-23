@@ -13,9 +13,51 @@ const { DeleteUserReviewController } = require('../../controllers/Counsellors/Re
 const { GetCounsellorReviewStats } = require('../../controllers/Counsellors/ReviewController/get.counsellor.review.stats');
 const { UpdateCounsellorDetailsController } = require('../../controllers/Counsellors/CounsellorController/update.counsellor.details');
 const { UpdateCounsellorValidator } = require('../../validators/Counsellor/update.counsellor.validate');
+const { GetCounsellorByUserId } = require('../../controllers/Counsellors/CounsellorController/get.counsellor.by.user.id');
+const { GetCounsellorDashboardStatsController } = require('../../controllers/Counsellors/CounsellorController/get.counsellor.dashboard.stats.controller');
 const router =  express.Router({});
 
 
+// Get Counselor using userId
+router.get('/me',
+    isAuthenticated,
+    GetCounsellorByUserId
+);
+
+router.post('/apply',
+     isAuthenticated, 
+     CounsellorApplicationValidator,
+     Validate,
+     CreateNewCounsellorController
+);
+
+router.get('/all',
+    isAuthenticated,
+    GetAllCounsellorsController
+)
+
+router.put('/me/update',
+    isAuthenticated,
+    UpdateCounsellorValidator,
+    Validate,
+    UpdateCounsellorDetailsController
+)
+
+router.get('/dashboard/stats', 
+    isAuthenticated,
+    GetCounsellorDashboardStatsController
+)
+
+router.get('/apply/already',
+    isAuthenticated,
+    IsUserAlreadyAppliedForCounsellor
+)
+
+
+router.get('/:counsellorId',
+    isAuthenticated, 
+    GetSingleCounsellorController
+)
 
 
 // Counsellor Review Routes
@@ -33,51 +75,16 @@ router.post('/:counsellorId/review/new',
     CreateNewReviewForCounsellorController
 )
 
-
-router.delete('/:counsellorId/review/:reviewId', 
-    isAuthenticated, 
-    DeleteUserReviewController
-);
-
 router.get('/:counsellorId/reviews/stats',
     isAuthenticated,
     GetCounsellorReviewStats
 );
 
 
-// Counsellor Routes
-
-router.post('/apply',
-     isAuthenticated, 
-     CounsellorApplicationValidator,
-     Validate,
-     CreateNewCounsellorController
-);
-
-router.get('/all',
-    isAuthenticated,
-    GetAllCounsellorsController
-)
-
-router.get('/:counsellorId',
+router.delete('/:counsellorId/review/:reviewId', 
     isAuthenticated, 
-    GetSingleCounsellorController
-)
-
-router.put('/:counsellorId/update',
-    isAuthenticated,
-    UpdateCounsellorValidator,
-    Validate,
-    UpdateCounsellorDetailsController
-)
-
-
-router.get('/apply/already',
-    isAuthenticated,
-    IsUserAlreadyAppliedForCounsellor
-)
-
-
+    DeleteUserReviewController
+);
 
 
 

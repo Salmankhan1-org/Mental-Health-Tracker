@@ -141,10 +141,9 @@ export default function AvailabilityPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-4">
+    <div className="max-w-4xl mx-auto space-y-8 p-1">
       <div className="flex items-center justify-between border-b pb-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Availability</h1>
           <p className="text-muted-foreground text-sm">Set your weekly recurring time slots.</p>
         </div>
         <div className="flex items-center gap-3">

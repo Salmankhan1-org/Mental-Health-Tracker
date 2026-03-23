@@ -1,11 +1,21 @@
-const Log = require("../../../models/log.model");
+const Log = require("../../../models/system/log.model");
 
-const LogController = async (request, relation, status, message, content={}) => {
+const LogController = async (request={}, relation, status, message, content={}) => {
     try {
+        const email =
+        request?.body?.email ||
+        request?.email ||
+        request?.user?.email ||
+        null;
+
+        const ip =
+        request?.headers?.["x-forwarded-for"] ||
+        request?.connection?.remoteAddress ||
+        "system";
         const log = await Log.create({
             relation: relation,
-            email: request.body?.email,
-            internetProtocolAddress: request.headers["x-forwarded-for"] || request.connection.remoteAddress,
+            email: email,
+            internetProtocolAddress: ip,
             status: status,
             message: message,
             content: content

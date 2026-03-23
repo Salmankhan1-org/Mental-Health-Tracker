@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CiLogout } from 'react-icons/ci'
 import { useLogout } from '@/hooks/use-logout'
 import { RootState } from '@/redux/store'
+import { useState } from 'react'
 
 interface CounsellorTopBarProps {
   onToggleSidebar: () => void
@@ -66,10 +67,25 @@ export function CounsellorTopBar({ onToggleSidebar }: CounsellorTopBarProps) {
   const pageTitle = pageNames[pathname] || 'Dashboard'
   const logout = useLogout();
   const {user} = useSelector((state:RootState)=>state?.auth);
+  const [pendingAppointments, setPendingAppointments] = useState([]);
+
+  const isPendingAppointmentsExist = async()=>{
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/appointment/pending/exist`,{
+        withCredentials : true
+      });
+
+      if(response.data.success){
+        setPendingAppointments(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <header className="border-b border-border bg-card">
-      <div className="flex items-center justify-between px-4 py-4 md:px-8">
+      <div className="flex items-center justify-between px-2 py-2 md:px-4">
         <div className="flex items-center gap-4">
           <Sheet>
             <SheetTrigger asChild>
@@ -127,14 +143,14 @@ export function CounsellorTopBar({ onToggleSidebar }: CounsellorTopBarProps) {
               </div>
             </SheetContent>
           </Sheet>
-          <h1 className="text-xl md:text-2xl font-bold text-foreground">{pageTitle}</h1>
+          <h1 className="text-lg md:text-xl font-semibold text-foreground">{pageTitle}</h1>
         </div>
 
         <div className="flex items-center gap-4">
           {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5 text-muted-foreground" />
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive" />
+            {pendingAppointments && pendingAppointments.length > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive" />}
           </Button>
 
           {/* Profile Dropdown */}

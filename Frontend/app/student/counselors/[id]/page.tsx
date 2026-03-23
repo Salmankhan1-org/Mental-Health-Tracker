@@ -77,7 +77,6 @@ export default function CounselorDetailsPage() {
 		}
 	}
 
-
 	const handleFetchCounselorData = async()=>{
 		try {
 			const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/counsellors/${id}`,{
@@ -228,24 +227,24 @@ export default function CounselorDetailsPage() {
                   <CardContent className="space-y-4">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-1">Session Fee</p>
-                      <p className="text-lg font-bold text-primary">{counselorData.sessionFee}</p>
+                      <p className="text-lg font-bold text-primary">{data?.sessionFee} $</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-2">Consultation Modes</p>
                       <div className="space-y-2">
-                        {counselorData.consultationModes.map((mode) => (
+                        {data?.consultationModes.map((mode:string) => (
                           <div key={mode} className="flex items-center gap-2 text-sm">
-                            {mode === 'Google Meet' && <Video className="h-4 w-4 text-primary" />}
-                            {mode === 'Phone' && <Phone className="h-4 w-4 text-primary" />}
-                            {mode === 'In-person' && <MapPin className="h-4 w-4 text-primary" />}
-                            <span className="text-foreground">{mode}</span>
+                            {mode === 'google-meet' && <Video className="h-4 w-4 text-primary" />}
+                            {mode === 'phone' && <Phone className="h-4 w-4 text-primary" />}
+                            {mode === 'in-person' && <MapPin className="h-4 w-4 text-primary" />}
+                            <span className="text-foreground capitalize">{mode}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                     <div className="border-t border-border pt-4">
                       <p className="text-sm font-medium text-muted-foreground mb-1">Location</p>
-                      <p className="text-sm text-foreground">{counselorData.location}</p>
+                      <p className="text-sm text-foreground">{data?.location}</p>
                     </div>
                     <div className="border-t border-border pt-4">
                       <p className="text-sm font-medium text-muted-foreground mb-1">Availability</p>

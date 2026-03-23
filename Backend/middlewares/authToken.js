@@ -10,6 +10,7 @@ exports.isAuthenticated =
     try {
 
         const token = GetAccessToken(request);
+
   
 
         if (token) {

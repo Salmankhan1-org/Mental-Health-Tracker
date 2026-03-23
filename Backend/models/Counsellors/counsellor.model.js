@@ -74,7 +74,7 @@ const counsellorSchema = new Schema(
       type: String
     },
 
-    consulatationModes:[
+    consultationModes:[
       {
         type:String
       }

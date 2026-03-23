@@ -77,7 +77,9 @@ export interface Counsellor {
     name: string
     profileImage?: string
   },
-  yearsOfExperience: number
+  yearsOfExperience: number,
+  sessionFee: number,
+  consultationModes:string[]
 }
 
 
@@ -104,4 +106,52 @@ export interface CounsellorReviewStats{
   averageRating : number,
   totalReviews : number,
   distribution: ReviewDistribution[]
+}
+
+export type AppointmentStatus = 'upcoming' |'pending' | 'scheduled' | 'cancelled' | 'completed';
+
+export type MeetingMethod =  'google-meet' | 'phone' | 'in-person';
+
+export interface IAppointment {
+  _id: string;
+  counsellor: string; // ObjectId as string
+  student: {
+    _id: string
+    name: string
+    email: string
+  };     // ObjectId as string
+  date: string | Date; // ISO Date string from MongoDB
+  startTime: string;   // e.g., "10:00"
+  endTime: string;     // e.g., "11:00"
+  slotId: string;
+  status: AppointmentStatus;
+  meetingMethod: MeetingMethod;
+  meetingDetails: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+
+export interface PaginationData {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface AppointmentsResponse {
+  statusCode: number
+  success: boolean;
+  data: {
+    appointments: IAppointment[];
+    pagination: PaginationData;
+  };
+  error:[]
+}
+
+
+export interface DashboardAnalytics{
+  totalSessionsThisWeek: number
+  upcomingSessions: number
+  cancelledSession : number
+  completionRate: string
 }

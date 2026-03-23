@@ -114,7 +114,7 @@ function CounselorCard({
           ))}
         </div>
 
-        <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+        <p className="mb-4 text-sm leading-relaxed text-muted-foreground line-clamp-6">
           {counselor.bio}
         </p>
 

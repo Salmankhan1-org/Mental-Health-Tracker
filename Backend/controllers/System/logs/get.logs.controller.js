@@ -1,4 +1,4 @@
-const Log = require("../../../models/log.model");
+const Log = require("../../../models/system/log.model");
 const { GetUserEmail } = require("../../../utils/User/get.user.id")
 const LogController = require("./log.controller")
 

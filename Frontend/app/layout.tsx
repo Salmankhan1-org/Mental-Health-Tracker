@@ -45,8 +45,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${dmSans.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="en" className={`${inter.variable} ${dmSans.variable} h-full`}>
+      <body className="font-sans antialiased h-full min-h-screen">
         <Toaster position='top-right' richColors/>
         <ReduxProvider>
             <AuthInitializer>
