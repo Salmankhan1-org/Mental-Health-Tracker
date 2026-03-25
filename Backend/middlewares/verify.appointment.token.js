@@ -4,6 +4,7 @@ exports.VerifyAppointmentActionToken = (request, response, next) => {
     try {
         const token = request.body.token || request.query.token;
 
+
         if (!token) {
             return response.status(401).json({
                 statusCode: 401,

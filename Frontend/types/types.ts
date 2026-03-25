@@ -1,3 +1,5 @@
+import { UserRole, UserStatus } from "@/lib/admin-types"
+
 export interface ApiFieldError {
   field: string
   message: string
@@ -154,4 +156,37 @@ export interface DashboardAnalytics{
   upcomingSessions: number
   cancelledSession : number
   completionRate: string
+}
+
+export type CounsellorStatus = 'active' | 'inactive' | 'on_leave'
+export type CounsellorRequestStatus = 'pending' | 'approved' | 'rejected'
+
+export interface AdminUsers{
+  _id:string
+  name: string
+  email: string
+  profileImage: string
+  sessionsAttained: number
+  status:UserStatus
+  role: UserRole
+  createdAt: string | Date
+}
+
+
+
+export interface AdminCounsellors{
+  _id: string
+  title: string,
+  expertiseTags:string[] ,
+  status: CounsellorRequestStatus,
+  averageRating: number,
+  totalReviews: number,
+  completedSessions: number,
+  yearsOfExperience: number,
+  name: string,
+  email: string,
+  profileImage:string,
+  licenseNumber: string
+  location: string
+  bio:string
 }

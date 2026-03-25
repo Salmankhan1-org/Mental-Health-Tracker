@@ -1,0 +1,13 @@
+1. Create A Page on which user will be redirected in case of inactive or suspended
+   and also show the reason for proper explanation, you can store reason along with status 
+
+
+2. Counsellor can able to change their status to on_leave which will restrict users to book appointment
+   with the same
+
+3. Counsellors can upload their ceritificates
+
+4. Counsellor can upload their holiday calender which will restrict those holiday days for users to book
+   appointment with the same
+
+

@@ -3,6 +3,8 @@ const { GetAccessToken } = require("../utils/JWT/get.token.jwt");
 const User = require("../models/userModel");
 const redisClient = require("../config/redis");
 
+const RestrictedUserStatus = ['inactive','suspended'];
+
 
 exports.isAuthenticated = 
   async (request, response, next) => {
@@ -25,6 +27,19 @@ exports.isAuthenticated =
 
                 if (cachedUser) {
                     request.user = JSON.parse(cachedUser);
+                    if(RestrictedUserStatus.includes(request?.user?.status)){
+                        return response.status(403).json({
+                            statusCode: 403,
+                            success: false,
+                            error:[
+                                {
+                                    field: 'popup',
+                                    message: 'Your Account is either inactive or suspended. Please contact to MindBridge Team'
+                                }
+                            ],
+                            message: ''
+                        })
+                    }
                     return next();
                 }
 
@@ -35,6 +50,20 @@ exports.isAuthenticated =
                     await redisClient.set(redisKey, JSON.stringify(user), { EX: 900 });
 
                     request.user = user;
+
+                    if(RestrictedUserStatus.includes(request?.user?.status)){
+                        return response.status(403).json({
+                            statusCode: 403,
+                            success: false,
+                            error:[
+                                {
+                                    field: 'popup',
+                                    message: 'Your Account is either inactive or suspended. Please contact to MindBridge Team'
+                                }
+                            ],
+                            message: ''
+                        })
+                    }
 
                     next();
                 }else{

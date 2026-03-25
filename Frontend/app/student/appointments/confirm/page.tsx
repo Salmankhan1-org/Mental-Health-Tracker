@@ -77,13 +77,6 @@ export default function ConfirmCompletionPage() {
             <p className="text-sm text-muted-foreground">
               {message}
             </p>
-
-            <Button
-              className="mt-4"
-              onClick={() => router.push('/student/dashboard')}
-            >
-              Go to Dashboard
-            </Button>
           </div>
         )}
 
@@ -97,14 +90,6 @@ export default function ConfirmCompletionPage() {
             <p className="text-sm text-muted-foreground">
               {message}
             </p>
-
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => router.push('/student')}
-            >
-              Go Home
-            </Button>
           </div>
         )}
 

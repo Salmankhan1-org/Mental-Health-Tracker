@@ -44,6 +44,12 @@ const reportSchema = new mongoose.Schema(
             default: 'open',
         },
 
+        severity: {
+            type: String,
+            enum: ['low', 'medium', 'high', 'critical'],
+            default: 'medium'
+        },
+
         resolvedAt: {
             type: Date,
             default: null,

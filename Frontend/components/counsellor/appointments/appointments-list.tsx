@@ -40,11 +40,10 @@ const statusStyles = {
 }
 
 export function AppointmentsList({ status }: AppointmentsListProps) {
-	console.log("Status:",status);
   const [appointmentsData, setAppointmentsData] = useState<IAppointment[]>([]);
   const [pagination, setPagination] = useState<PaginationData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [openAcceptAppointmentDialog, setOpenAcceptAppointmentDialog] = useState<boolean>(false);
+  const [openAcceptAppointmentDialog, setOpenAcceptAppointmentDialog] = useState<boolean>(true);
   const {handleCancelAppointment, isCancelling} = useCancelAppointment();
   const [selectedAppointment, setSelectedAppointment] = useState<IAppointment | null>(null);
   const [declineDialogOpen, setDeclineDialogOpen] = useState(false);

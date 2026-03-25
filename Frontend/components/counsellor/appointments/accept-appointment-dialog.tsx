@@ -36,6 +36,7 @@ export default function AcceptAppointmentDialog({
   appointmentId,
   handleFetchAppointments
 }: Props) {
+
   const [loading, setLoading] = useState(false)
 
   const [meetingLink, setMeetingLink] = useState('')

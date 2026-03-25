@@ -80,7 +80,7 @@ module.exports = function AppointmentCompletionConfirmationTemplate(
                                 
                                 <!-- Confirm Button -->
                                 <td align="center" style="padding-right:10px;">
-                                <a href="${process.env.FRONTEND_URL}/student/appointments/confirm?token=${details.appointmentToken}" 
+                                <a href="${process.env.FRONTEND_URL}/appointments/confirm?token=${details.appointmentToken}" 
                                     style="background:${brandColor}; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:bold; display:inline-block;">
                                     Yes, It Was Completed
                                 </a>
@@ -88,7 +88,7 @@ module.exports = function AppointmentCompletionConfirmationTemplate(
 
                                 <!-- Report Button -->
                                 <td align="center">
-                                <a href="${process.env.FRONTEND_URL}/student/appointments/report/token=${details.appointmentToken}" 
+                                <a href="${process.env.FRONTEND_URL}/appointments/report?token=${details.appointmentToken}" 
                                     style="background:#ef4444; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:bold; display:inline-block;">
                                     Report an Issue
                                 </a>

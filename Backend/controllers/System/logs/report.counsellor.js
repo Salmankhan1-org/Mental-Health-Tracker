@@ -1,19 +1,25 @@
 const Appointment = require("../../../models/Counsellors/appointment.model");
 const Report = require("../../../models/system/report.model");
+const { GetSeverity } = require("../../../utils/AI/get.severity");
 
-exports.CreateReportFromEmailController = async (req, res) => {
+exports.CreateReportFromEmailController = async (request, response) => {
     try {
-        const { appointmentId, userId } = req.reportUser;
-        const { reason, description } = req.body;
+        const { appointmentId, userId } = request;
+        const { reason, description } = request.body;
 
         const appointment = await Appointment.findById(appointmentId)
             .populate('student counsellor');
 
         if (!appointment) {
-            return res.status(404).json({
+            return response.status(404).json({
                 statusCode: 404,
                 success: false,
-                error: [{ field: 'popup', message: 'Appointment not found' }],
+                error: [
+                    { 
+                        field: 'popup', 
+                        message: 'Appointment not found' 
+                    }
+                ],
                 message: ''
             });
         }
@@ -22,7 +28,7 @@ exports.CreateReportFromEmailController = async (req, res) => {
             appointment.student._id.toString() !== userId &&
             appointment.counsellor._id.toString() !== userId
         ) {
-            return res.status(403).json({
+            return response.status(403).json({
                 statusCode: 403,
                 success: false,
                 error: [
@@ -41,7 +47,7 @@ exports.CreateReportFromEmailController = async (req, res) => {
         });
 
         if (alreadyReported) {
-            return res.status(400).json({
+            return response.status(400).json({
                 statusCode: 400,
                 success: false,
                 error: [
@@ -53,6 +59,8 @@ exports.CreateReportFromEmailController = async (req, res) => {
                 message: ''
             });
         }
+        // Auto detect severity of report using AI
+        const severity = await GetSeverity(reason, description);
 
         const against =
             appointment.student._id.toString() === userId
@@ -64,10 +72,11 @@ exports.CreateReportFromEmailController = async (req, res) => {
             reportedBy: userId,
             against,
             reason,
-            description
+            description,
+            severity
         });
 
-        return res.status(201).json({
+        return response.status(201).json({
             statusCode: 201,
             success: true,
             error: [],
@@ -76,7 +85,7 @@ exports.CreateReportFromEmailController = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
+        return response.status(500).json({
             statusCode: 500,
             success: false,
             error: [

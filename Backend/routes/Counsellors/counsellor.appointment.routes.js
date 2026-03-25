@@ -14,6 +14,8 @@ const { GetRecentPendingAppointmentsController } = require('../../controllers/Co
 const { MarkAppointmentCompletedController } = require('../../controllers/Counsellors/AppointmentController/mark.appointment.completed.controller');
 const { VerifyAppointmentActionToken } = require('../../middlewares/verify.appointment.token');
 const { ConfirmAppointmentCompletionController } = require('../../controllers/Counsellors/AppointmentController/confirm.appointment.completion.controller');
+const { CreateReportFromEmailController } = require('../../controllers/System/logs/report.counsellor');
+const { CreateReportValidator } = require('../../validators/Counsellor/report.counsellor.validator');
 const router = express.Router();
 
 
@@ -28,11 +30,20 @@ router.get('/today',
     GetTodaysUpcomingAppointmentsController
 )
 
+//report a counsellor
+router.post('/report',
+    VerifyAppointmentActionToken,
+    CreateReportValidator,
+    Validate,
+    CreateReportFromEmailController
+)
+
 // confirm appointment completion by user
 router.patch('/complete/confirm',
     VerifyAppointmentActionToken,
     ConfirmAppointmentCompletionController
 )
+
 
 router.get('/pending/recent',
     isAuthenticated,

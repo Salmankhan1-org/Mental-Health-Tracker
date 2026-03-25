@@ -15,6 +15,11 @@ const { UpdateCounsellorDetailsController } = require('../../controllers/Counsel
 const { UpdateCounsellorValidator } = require('../../validators/Counsellor/update.counsellor.validate');
 const { GetCounsellorByUserId } = require('../../controllers/Counsellors/CounsellorController/get.counsellor.by.user.id');
 const { GetCounsellorDashboardStatsController } = require('../../controllers/Counsellors/CounsellorController/get.counsellor.dashboard.stats.controller');
+const { FilterCounsellorsController } = require('../../controllers/Counsellors/CounsellorController/filter.counsellors.controller');
+const { AuthorizeAdmin } = require('../../middlewares/auth.admin');
+const { FilterCounsellorsValidator } = require('../../validators/Counsellor/filter.counsellor.validator');
+const { UpdateCounsellorStatusController } = require('../../controllers/Counsellors/CounsellorController/update.counsellor.status');
+const { UpdateCounsellorStatusValidator } = require('../../validators/Counsellor/update.counsellor.status');
 const router =  express.Router({});
 
 
@@ -53,6 +58,15 @@ router.get('/apply/already',
     IsUserAlreadyAppliedForCounsellor
 )
 
+//admin route to filter counsellor
+router.get('/admin/filter-counsellors',
+    isAuthenticated,
+    AuthorizeAdmin,
+    FilterCounsellorsValidator,
+    Validate,
+    FilterCounsellorsController
+)
+
 
 router.get('/:counsellorId',
     isAuthenticated, 
@@ -79,6 +93,14 @@ router.get('/:counsellorId/reviews/stats',
     isAuthenticated,
     GetCounsellorReviewStats
 );
+
+router.patch('/:counsellorId/admin/update/status',
+    isAuthenticated,
+    AuthorizeAdmin,
+    UpdateCounsellorStatusValidator,
+    Validate,
+    UpdateCounsellorStatusController
+)
 
 
 router.delete('/:counsellorId/review/:reviewId', 

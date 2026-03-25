@@ -60,8 +60,6 @@ export function StatsCards() {
         }
     }
 
-	console.log(analyticsData);
-
     useEffect(() => {
         handleFetchDashboardStats();
     }, []);

@@ -20,6 +20,10 @@ const { AutoCompleteAppointments } = require("./cron-jobs/auto.complete.appointm
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+{/*
+    ** Rate Limiter and helmet Apply here
+*/}
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
