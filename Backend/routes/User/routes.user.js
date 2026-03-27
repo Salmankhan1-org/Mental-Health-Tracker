@@ -15,6 +15,9 @@ const { UpdateUserPermissionController } = require("../../controllers/Users/upda
 const { UpdateRoleValidator } = require("../../validators/User/update.permission.validator");
 const { UpdateUserStatusController } = require("../../controllers/Users/update.user.status.controller");
 const { UpdateStatusValidator } = require("../../validators/User/update.status.validator");
+const { GetFilteredReportsController } = require("../../controllers/System/reports/get.filtered.reports.controller");
+const { FilteredReportsValidator } = require("../../validators/User/filter.reports.validator");
+const { HandleReportController } = require("../../controllers/System/reports/handle.report.controller");
 const router = express.Router();
 
 
@@ -37,6 +40,14 @@ router.get("/user/details",
     GetUserDetailsController
 );
 
+router.get('/admin/filter-reports',
+    isAuthenticated,
+    AuthorizeAdmin,
+    FilteredReportsValidator,
+    Validate,
+    GetFilteredReportsController
+)
+
 // admin routes
 // router.get('/admin/users',
 //     isAuthenticated,
@@ -56,6 +67,12 @@ router.delete('/admin/:userId',
     isAuthenticated,
     AuthorizeAdmin,
     DeleteUserByAdminController
+)
+
+router.patch('/admin/report/:reportId',
+    isAuthenticated,
+    AuthorizeAdmin,
+    HandleReportController
 )
 
 router.patch('/admin/update/permission/:userId',

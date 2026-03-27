@@ -1,4 +1,4 @@
-import { UserRole, UserStatus } from "@/lib/admin-types"
+import { ReportSeverity, ReportStatus, UserRole, UserStatus } from "@/lib/admin-types"
 
 export interface ApiFieldError {
   field: string
@@ -110,7 +110,7 @@ export interface CounsellorReviewStats{
   distribution: ReviewDistribution[]
 }
 
-export type AppointmentStatus = 'upcoming' |'pending' | 'scheduled' | 'cancelled' | 'completed';
+export type AppointmentStatus = 'pending' | 'scheduled' | 'cancelled' | 'completed' | 'completed_by_counsellor';
 
 export type MeetingMethod =  'google-meet' | 'phone' | 'in-person';
 
@@ -189,4 +189,48 @@ export interface AdminCounsellors{
   licenseNumber: string
   location: string
   bio:string
+}
+
+export interface StudentDetails{
+  _id:string,
+  name: string,
+  email: string,
+  profileImage: string
+}
+
+export interface CounsellorDetails{
+  _id:string,
+  name: string,
+  email: string,
+  profileImage: string
+}
+
+export interface AdminAppointments{
+  _id: string,
+  counsellor:string
+  student: string
+  studentDetails: StudentDetails
+  counsellorDetails: CounsellorDetails
+  startTime: string
+  endTime:string
+  date: string | Date
+  status: AppointmentStatus
+  meetingMethod: MeetingMethod
+  meetingDetails: string
+  createdAt: string | Date
+  confirmationDeadline: string | Date
+  slotId: string
+}
+
+export interface UserReports{
+  _id: string,
+  reportedBy: string,
+  against: string,
+  studentDetails: StudentDetails
+  counsellorDetails: CounsellorDetails
+  reason: string,
+  severity: ReportSeverity,
+  status: ReportStatus,
+  createdAt: string | Date
+  description: string
 }

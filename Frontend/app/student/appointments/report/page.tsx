@@ -84,6 +84,9 @@ export default function ReportPage() {
                         <SelectItem value="late_join">Joined late</SelectItem>
                         <SelectItem value="unprofessional_behavior">Unprofessional behavior</SelectItem>
                         <SelectItem value="technical_issue">Technical issue</SelectItem>
+                        <SelectItem value="breach_of_confidentiality">Breach of Confidentiality</SelectItem>
+                        <SelectItem value="missed_appointment">Missed Appointment</SelectItem>
+                        <SelectItem value="unprofessional_communication">Unprofessional Communication</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                     </Select>

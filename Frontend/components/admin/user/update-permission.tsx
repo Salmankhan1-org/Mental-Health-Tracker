@@ -99,7 +99,7 @@ export default function RoleChangeDialog({
               Target Role
             </label>
             <Select value={role} onValueChange={setRole}>
-              <SelectTrigger className="h-11 border-slate-200  shadow-sm">
+              <SelectTrigger className="h-11 bg-muted border-border focus:ring-primary shadow-sm">
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent>

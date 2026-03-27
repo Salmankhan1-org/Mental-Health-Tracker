@@ -27,6 +27,9 @@ const reportSchema = new mongoose.Schema(
                 'late_join',
                 'unprofessional_behavior',
                 'technical_issue',
+                'breach_of_confidentiality',
+                'missed_appointment',
+                'unprofessional_communication',
                 'other'
             ],
             required: true,

@@ -14,8 +14,11 @@ const { GetRecentPendingAppointmentsController } = require('../../controllers/Co
 const { MarkAppointmentCompletedController } = require('../../controllers/Counsellors/AppointmentController/mark.appointment.completed.controller');
 const { VerifyAppointmentActionToken } = require('../../middlewares/verify.appointment.token');
 const { ConfirmAppointmentCompletionController } = require('../../controllers/Counsellors/AppointmentController/confirm.appointment.completion.controller');
-const { CreateReportFromEmailController } = require('../../controllers/System/logs/report.counsellor');
+const { CreateReportFromEmailController } = require('../../controllers/System/reports/report.counsellor');
 const { CreateReportValidator } = require('../../validators/Counsellor/report.counsellor.validator');
+const { GetFilteredAppointmentsController } = require('../../controllers/Counsellors/AppointmentController/get.filtered.appointment');
+const { AuthorizeAdmin } = require('../../middlewares/auth.admin');
+const { FilteredAppointmentsValidator } = require('../../validators/Counsellor/filter.appointment.validator');
 const router = express.Router();
 
 
@@ -38,6 +41,8 @@ router.post('/report',
     CreateReportFromEmailController
 )
 
+
+
 // confirm appointment completion by user
 router.patch('/complete/confirm',
     VerifyAppointmentActionToken,
@@ -55,6 +60,15 @@ router.get('/pending/exist',
     isAuthenticated,
     CheckIfPendingAppointmentExist
 )
+
+router.get('/admin/filter-appointments',
+    isAuthenticated,
+    AuthorizeAdmin,
+    FilteredAppointmentsValidator,
+    Validate,
+    GetFilteredAppointmentsController
+)
+
 
 
 router.get('/:counsellorId/available/slots',

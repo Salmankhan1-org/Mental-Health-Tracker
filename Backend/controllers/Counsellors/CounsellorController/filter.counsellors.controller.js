@@ -7,7 +7,7 @@ exports.FilterCounsellorsController = async (request, response) => {
         specialization,
         status,
         minRating,
-        maxRating,
+        maxRating=5,
         sortBy = "rating", 
         page = 1,
         limit = 10

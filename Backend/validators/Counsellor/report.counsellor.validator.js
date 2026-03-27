@@ -8,6 +8,9 @@ exports.CreateReportValidator = [
       'late_join',
       'unprofessional_behavior',
       'technical_issue',
+      'breach_of_confidentiality',
+      'unprofessional_communication',
+      'missed_appointment',
       'other'
     ]).withMessage('Invalid reason'),
 

@@ -21,7 +21,8 @@ import { AdminCounsellors, PaginationData } from '@/types/types'
 import { ConfirmActionDialog } from '@/components/counsellor/appointments/confirm-action-dialog'
 import { ToastFunction } from '@/helper/toast-function'
 import { ApproveActionDialog } from '@/components/counsellor/appointments/approve-action-dialog'
-import CounsellorDetailDialog from '@/components/admin/counsellor/view-details-dialog'
+import dynamic from 'next/dynamic'
+const CounsellorDetailDialog = dynamic(()=>import('@/components/admin/counsellor/view-details-dialog'));
 
 export default function CounsellorRequestsPage() {
     const [search, setSearch] = useState('')
@@ -121,13 +122,18 @@ export default function CounsellorRequestsPage() {
                         breakLabel="..."
                         nextLabel={<ChevronRight className="h-4 w-4" />}
                         onPageChange={(e) => fetchRequests(e.selected + 1)}
+                        pageRangeDisplayed={3}
                         pageCount={pagination.totalPages}
                         previousLabel={<ChevronLeft className="h-4 w-4" />}
-                        containerClassName="flex items-center gap-1"
-                        pageLinkClassName="flex h-9 w-9 items-center justify-center rounded-md border text-sm font-medium hover:bg-accent"
+                        containerClassName="flex items-center gap-1 select-none"
+                        pageClassName="block"
+                        pageLinkClassName="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm font-medium hover:bg-accent hover:text-accent-foreground"
                         activeLinkClassName="!bg-primary !text-primary-foreground border-primary"
-                        previousLinkClassName="flex h-9 w-9 items-center justify-center rounded-md border"
-                        nextLinkClassName="flex h-9 w-9 items-center justify-center rounded-md border"
+                        previousLinkClassName="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent"
+                        nextLinkClassName="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent"
+                        disabledLinkClassName="opacity-50 cursor-not-allowed hover:bg-background"
+                        breakLinkClassName="flex h-9 w-9 items-center justify-center"
+                        renderOnZeroPageCount={null}
                     />
                 )}
             </nav>
