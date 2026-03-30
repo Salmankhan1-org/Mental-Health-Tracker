@@ -134,6 +134,7 @@ exports.FilterCounsellorsController = async (request, response) => {
           yearsOfExperience: 1,
           name: "$userDetails.name",
           email: "$userDetails.email",
+          userId: "$userDetails._id",
           profileImage: "$userDetails.profileImage"
         }
       },

@@ -73,7 +73,7 @@ exports.UpdateUserPermissionController = async (request, response) => {
                 * Notify User about their permission has updagraded or fowngraded
             */}
 
-            await LogController(request, 'permission-change','success', `${user.name}'s Role has been change to ${newRole}`);
+            await LogController(request, 'Permission Updated','success', `${user.name}'s Role has been change to ${newRole}`);
             
 
             return response.status(200).json({

@@ -58,7 +58,7 @@ exports.HandleReportController = async(request, response)=>{
 
         // if resolved or reject then notify user about their report status
 
-        await LogController(request, 'report-handled', 'success',  `Report has been ${status} successfully`)
+        await LogController(request, 'Report Processed', 'success',  `Report has been ${status} successfully`)
 
         return response.status(200).json({
             statusCode: 200,

@@ -3,6 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { connectDB } = require("./config/connectDB");
 require("dotenv").config();
+require('./workers/cron.worker.js');
 
 const AIChatRoutes = require("./routes/AI_Chats/routes.ai.chat");
 const UserRoutes = require("./routes/User/routes.user")
@@ -16,6 +17,7 @@ const AppointmentRoutes = require('./routes/Counsellors/counsellor.appointment.r
 const { CancelExpiredAppointments } = require("./cron-jobs/cancel.expire.appointments");
 const { AppointmentReminderCron } = require("./cron-jobs/appointment.reminder");
 const { AutoCompleteAppointments } = require("./cron-jobs/auto.complete.appointment");
+const StartAppointmentReminderCronJobs = require("./cron-jobs/appointment.reminder");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -49,7 +51,9 @@ app.use('/api/v1/appointment',AppointmentRoutes);
 
 // CRON Jobs
 CancelExpiredAppointments();
-AppointmentReminderCron();
+(async()=>{
+    await StartAppointmentReminderCronJobs();
+})()
 AutoCompleteAppointments();
 
 app.use(GlobalErrorHandler);

@@ -1,6 +1,7 @@
 const Appointment = require("../../../models/Counsellors/appointment.model");
 const Report = require("../../../models/system/report.model");
 const { GetSeverity } = require("../../../utils/AI/get.severity");
+const LogController = require("../logs/log.controller");
 
 exports.CreateReportFromEmailController = async (request, response) => {
     try {
@@ -8,7 +9,11 @@ exports.CreateReportFromEmailController = async (request, response) => {
         const { reason, description } = request.body;
 
         const appointment = await Appointment.findById(appointmentId)
-            .populate('student counsellor');
+            .populate('student','name email')
+            .populate('counsellor','name email');
+
+
+        request.body.email = appointment?.student?.email;
 
         if (!appointment) {
             return response.status(404).json({
@@ -76,15 +81,18 @@ exports.CreateReportFromEmailController = async (request, response) => {
             severity
         });
 
+        await LogController(request, 'Report Submitted', 'success', `${appointment.student.name} reported ${appointment.counsellor.name}`)
+
         return response.status(201).json({
             statusCode: 201,
             success: true,
             error: [],
             message: 'Report submitted successfully',
             data: report
-        });
+        })
 
     } catch (error) {
+        await LogController(request, 'Report Submitted', 'failed', error?.message || 'Internal Server Error')
         return response.status(500).json({
             statusCode: 500,
             success: false,

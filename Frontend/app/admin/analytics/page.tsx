@@ -34,7 +34,6 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Analytics</h1>
         <p className="text-muted-foreground mt-1">Platform performance and insights</p>
       </div>
 

@@ -136,7 +136,7 @@ exports.BookSlotForUserController = async(request, response)=>{
             html: emailHtml
         });
 
-        await LogController(request, 'Request Slot', 'success',`Requested a slot with ${Counsellor.email} on ${date}`);
+        await LogController(request, 'Requested A Booking Slot', 'success',`Requested a slot with ${Counsellor.email} on ${date}`);
         // 5. Success
         return response.status(201).json({
             statusCode: 201,

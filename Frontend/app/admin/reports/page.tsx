@@ -99,7 +99,7 @@ export default function ReportsPage() {
         fetchReports();
     }
 
-    const criticalCount = reports.filter(r => r.severity === 'critical').length
+    const criticalCount = reports.filter(r => r.severity === 'critical' && r.status !== 'resolved').length
 
     return (
         <div className="flex flex-col gap-4 min-h-screen bg-slate-50/50 p-4">

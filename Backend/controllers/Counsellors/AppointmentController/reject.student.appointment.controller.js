@@ -56,7 +56,7 @@ exports.RejectStudentAppointmentController = async (request, response) => {
             html
         });
 
-        await LogController(request,'api::info','success','Expired appointment processed')
+        await LogController(request,'Appointment Cancelled','success','Expired appointment processed')
 
     return response.status(200).json({
         statusCode: 200,

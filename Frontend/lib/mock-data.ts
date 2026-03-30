@@ -1,3 +1,4 @@
+import { Globe, Phone, Users, Video } from "lucide-react";
 
 
 export const appointmentsData = {
@@ -109,4 +110,28 @@ export const appointmentsData = {
       status: 'cancelled' as const,
     },
   ],
+}
+
+export const METHOD_THEMES: Record<string, { label: string; icon: any; className: string }> = {
+  'google-meet': { 
+    label: "Google Meet", 
+    icon: Video, 
+    className: "text-emerald-700 bg-emerald-50 border-emerald-200" 
+  },
+  'phone': { 
+    label: "Phone Call", 
+    icon: Phone, 
+    className: "text-blue-700 bg-blue-50 border-blue-200" 
+  },
+  'in-person': { 
+    label: "In-Person", 
+    icon: Users, 
+    className: "text-slate-700 bg-slate-50 border-slate-200" 
+  },
+  // Add this to prevent "undefined" errors
+  'default': {
+    label: "Not Specified",
+    icon: Globe,
+    className: "text-slate-400 bg-slate-50 border-slate-100"
+  }
 }

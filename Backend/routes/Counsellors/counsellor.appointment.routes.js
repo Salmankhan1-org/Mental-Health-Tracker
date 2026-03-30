@@ -19,6 +19,7 @@ const { CreateReportValidator } = require('../../validators/Counsellor/report.co
 const { GetFilteredAppointmentsController } = require('../../controllers/Counsellors/AppointmentController/get.filtered.appointment');
 const { AuthorizeAdmin } = require('../../middlewares/auth.admin');
 const { FilteredAppointmentsValidator } = require('../../validators/Counsellor/filter.appointment.validator');
+const { GetRecentAppointmentsController } = require('../../controllers/Counsellors/AppointmentController/get.recent.appointments.controller');
 const router = express.Router();
 
 
@@ -39,6 +40,13 @@ router.post('/report',
     CreateReportValidator,
     Validate,
     CreateReportFromEmailController
+)
+
+
+router.get('/admin/recent',
+    isAuthenticated,
+    AuthorizeAdmin,
+    GetRecentAppointmentsController
 )
 
 

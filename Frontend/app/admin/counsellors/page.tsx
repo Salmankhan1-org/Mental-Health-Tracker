@@ -21,6 +21,7 @@ import { StatusBadge } from '@/components/admin/status-badge'
 import { toast } from 'sonner'
 import dynamic from 'next/dynamic'
 import SendMessageDialog from '@/components/admin/send-message-dialog'
+import { email } from 'zod/v4'
 // import CounsellorDetailDialog from '@/components/admin/counsellor/view-details-dialog'
 
 const CounsellorDetailDialog = dynamic(()=>import('@/components/admin/counsellor/view-details-dialog'));
@@ -265,7 +266,14 @@ export default function CounsellorsPage() {
              <SendMessageDialog
                 isOpen={!!selectCounsellorForMessage}
                 onClose={()=>setSelectCounsellorForMessage(null)}
-                counsellor={selectCounsellorForMessage}
+                target={
+                    {
+                        email: selectCounsellorForMessage?.email,
+                        name: selectCounsellorForMessage?.name,
+                        id: selectCounsellorForMessage?.userId,
+                        role: 'counsellor'
+                    }
+                }
             />
            )}
         </div>

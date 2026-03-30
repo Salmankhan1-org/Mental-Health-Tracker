@@ -27,25 +27,10 @@ const AppointmentDetailDialog = dynamic(()=>import('@/components/admin/Appointme
 import { Video, Phone, Users, Globe } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { cn } from '@/lib/utils'
+import { METHOD_THEMES } from '@/lib/mock-data'
 
 
-export const METHOD_THEMES: Record<string, { label: string; icon: any; className: string }> = {
-  'google-meet': { 
-    label: "Google Meet", 
-    icon: Video, 
-    className: "text-emerald-700 bg-emerald-50 border-emerald-200" 
-  },
-  'phone': { 
-    label: "Phone Call", 
-    icon: Phone, 
-    className: "text-blue-700 bg-blue-50 border-blue-200" 
-  },
-  'in-person': { 
-    label: "In-Person", 
-    icon: Users, 
-    className: "text-slate-700 bg-slate-50 border-slate-200" 
-  },
-}
+
 
 export default function AppointmentsPage() {
     const [searchTerm, setSearchTerm] = useState('')
@@ -264,20 +249,24 @@ export default function AppointmentsPage() {
                             </div>
 
                             <div className="col-span-1 flex items-center">
-                                {(() => {
-                                    const config = METHOD_THEMES[apt.meetingMethod] || METHOD_THEMES.default;
-                                    const Icon = config?.icon;
-                                    
-                                    return (
-                                    <div className={cn(
-                                        "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold uppercase tracking-tight",
-                                        config.className
-                                    )}>
-                                        <Icon className="h-3.5 w-3.5" />
-                                        {config.label}
-                                    </div>
-                                    );
-                                })()}
+                            {(() => {
+                                // Look up the config, fallback to 'default' if the key doesn't exist
+                                const config = METHOD_THEMES[apt.meetingMethod] || METHOD_THEMES.default;
+                                
+                                // Safety check: If for some reason both are missing, don't render an icon
+                                const Icon = config?.icon;
+                                
+                                return (
+                                <div className={cn(
+                                    "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold uppercase tracking-tight",
+                                    config?.className
+                                )}>
+                                    {/* Only render Icon if it actually exists */}
+                                    {Icon && <Icon className="h-3.5 w-3.5" />}
+                                    {config?.label}
+                                </div>
+                                );
+                            })()}
                             </div>
 
                             {/* Actions */}

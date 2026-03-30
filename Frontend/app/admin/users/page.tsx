@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { Search, ChevronDown, MoreHorizontal, Trash2, UserCog, ShieldCheck, Calendar, CheckCircle, ChevronLeft, ChevronRight, Filter, RotateCcw } from 'lucide-react'
+import { Search, ChevronDown, MoreHorizontal, Trash2, UserCog, ShieldCheck, Calendar, CheckCircle, ChevronLeft, ChevronRight, Filter, RotateCcw, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -20,10 +20,13 @@ import { ConfirmActionDialog } from '@/components/counsellor/appointments/confir
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { RoleBadge } from '@/components/admin/role-badge'
 import { toast } from 'sonner'
-import RoleChangeDialog from '@/components/admin/user/update-permission'
-import StatusChangeDialog from '@/components/admin/user/toggle-user-status'
 import { StatusBadge } from '@/components/admin/status-badge'
 import { ToastFunction } from '@/helper/toast-function'
+import dynamic from 'next/dynamic'
+
+const RoleChangeDialog = dynamic(()=>import('@/components/admin/user/update-permission'));
+const StatusChangeDialog = dynamic(()=>import('@/components/admin/user/toggle-user-status')) 
+const SendMessageDialog = dynamic(()=>import('@/components/admin/send-message-dialog')) 
 
 export default function UsersPage() {
     const [searchTerm, setSearchTerm] = useState('')
@@ -36,6 +39,7 @@ export default function UsersPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [selectedUserForRole, setselectedUserForRole] = useState<AdminUsers | null>(null)
     const [selectedUserForStatus, setSelectedUserForStatus] = useState<AdminUsers | null>(null)
+    const [selectedUserForMessage, setSelectedUserForMessage] = useState<AdminUsers|null>(null);
 
     const fetchUsers = useCallback(async (page = 1) => {
         try {
@@ -268,6 +272,9 @@ export default function UsersPage() {
                                             <UserCog className="mr-2 h-4 w-4 text-slate-500" />
                                             Toggle Status
                                         </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={()=>setSelectedUserForMessage(user)} className="cursor-pointer">
+                                            <Mail className="mr-2 h-4 w-4 text-slate-500" /> Send Message
+                                        </DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem 
                                             className="text-red-600 focus:bg-red-50 focus:text-red-600 rounded-md cursor-pointer"
@@ -321,6 +328,19 @@ export default function UsersPage() {
                     onClose={()=>setSelectedUserForStatus(null)}
                     user={selectedUserForStatus}
                     onConfirm={fetchUsers}
+                />
+            )}
+
+            {selectedUserForMessage && (
+                <SendMessageDialog
+                isOpen={!!selectedUserForMessage}
+                onClose={()=>setSelectedUserForMessage(null)}
+                target={{
+                    email: selectedUserForMessage?.email,
+                    name: selectedUserForMessage?.name,
+                    id: selectedUserForMessage?._id,
+                    role: 'student'
+                }}
                 />
             )}
 

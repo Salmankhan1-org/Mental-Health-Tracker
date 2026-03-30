@@ -30,21 +30,30 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { AdminCounsellors } from '@/types/types'
 import { LoadingButton } from '../common/button'
+import { ToastFunction } from '@/helper/toast-function'
+import axios from 'axios'
+
+type MessageTarget = {
+  id: string
+  name: string
+  email: string
+  role?: 'student' | 'counsellor' | 'user'
+}
 
 interface ContactCounsellorProps {
-  counsellor: AdminCounsellors
+  target: MessageTarget | null
   reportId?: string
   isOpen: boolean
   onClose: () => void
 }
 
 export default function SendMessageDialog({
-  counsellor,
+  target,
   reportId,
   isOpen,
   onClose
 }: ContactCounsellorProps) {
-  if (!counsellor) return null
+  if (!target) return null
 
   const [subject, setSubject] = useState(reportId ? `Urgent: Regarding Report #${reportId.slice(-6)}` : '')
   const [message, setMessage] = useState('')
@@ -59,12 +68,18 @@ export default function SendMessageDialog({
 
     setIsSending(true)
     try {
-      // API call placeholder
-      await new Promise(resolve => setTimeout(resolve, 1200))
-      toast.success(`Message sent to ${counsellor.name}`)
-      onClose()
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_HOST}/users/admin/${target?.id}/message/send`,
+        {category, subject, message},
+        {withCredentials: true}
+      );
+
+      if(response.data.success){
+        onClose();
+        ToastFunction('success', response.data.message);
+      }
     } catch (error) {
-      toast.error("Failed to send message")
+      console.log(error);
+      ToastFunction('error',error);
     } finally {
       setIsSending(false)
     }
@@ -82,8 +97,8 @@ export default function SendMessageDialog({
        <DialogHeader className="p-6 border-b bg-white shrink-0">
         <div className="space-y-1">
             <DialogTitle className="text-xl font-bold flex items-center gap-2 text-slate-900">
-            <Mail className="h-5 w-5 text-primary" />
-            Contact Counsellor
+                <Mail className="h-5 w-5 text-primary" />
+                Contact {target.role === 'counsellor' ? 'Counsellor' : 'User'}
             </DialogTitle>
             <p className="text-slate-500 text-xs">
             Direct communication from Admin Panel
@@ -97,10 +112,10 @@ export default function SendMessageDialog({
 
             <div className="overflow-hidden">
             <p className="text-sm font-semibold text-slate-900 truncate">
-                {counsellor.name}
+                {target.name}
             </p>
             <p className="text-xs text-slate-500 truncate">
-                {counsellor.email}
+                {target.email}
             </p>
             </div>
 

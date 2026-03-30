@@ -75,7 +75,7 @@ exports.AcceptStudentAppointmentController = async(request, response)=>{
             html
         });
 
-        await LogController(request, 'api::info', 'success', 'Appointment accepted successfully');
+        await LogController(request, 'Appointment Accepted', 'success', 'Appointment accepted successfully');
 
         return response.status(200).json({
             statusCode: 200,

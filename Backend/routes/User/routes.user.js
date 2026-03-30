@@ -18,6 +18,10 @@ const { UpdateStatusValidator } = require("../../validators/User/update.status.v
 const { GetFilteredReportsController } = require("../../controllers/System/reports/get.filtered.reports.controller");
 const { FilteredReportsValidator } = require("../../validators/User/filter.reports.validator");
 const { HandleReportController } = require("../../controllers/System/reports/handle.report.controller");
+const { ContactToCounsellorController } = require("../../controllers/Counsellors/CounsellorController/contact.counsellor.controller");
+const { GetCriticalReportsController } = require("../../controllers/System/reports/get.critical.reports");
+const { GetRecentActivitiesController } = require("../../controllers/System/logs/get.recent.activities.controller");
+const { GetAdminDashboardStatsController } = require("../../controllers/Users/get.admin.dashboard.stats.controller");
 const router = express.Router();
 
 
@@ -55,6 +59,24 @@ router.get('/admin/filter-reports',
 //     GetAllUsersByAdminWithStatsController
 // )
 
+router.get('/admin/critical/reports',
+    isAuthenticated,
+    AuthorizeAdmin,
+    GetCriticalReportsController
+)
+
+router.get('/admin/recent/activities',
+    isAuthenticated,
+    AuthorizeAdmin,
+    GetRecentActivitiesController
+)
+
+router.get('/admin/dashboard/stats',
+    isAuthenticated,
+    AuthorizeAdmin,
+    GetAdminDashboardStatsController
+)
+
 router.get('/admin/filter-users',
     isAuthenticated,
     AuthorizeAdmin,
@@ -67,6 +89,12 @@ router.delete('/admin/:userId',
     isAuthenticated,
     AuthorizeAdmin,
     DeleteUserByAdminController
+)
+
+router.post('/admin/:receiverId/message/send',
+    isAuthenticated,
+    AuthorizeAdmin,
+    ContactToCounsellorController
 )
 
 router.patch('/admin/report/:reportId',

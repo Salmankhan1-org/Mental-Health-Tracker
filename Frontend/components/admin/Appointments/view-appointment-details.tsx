@@ -21,6 +21,7 @@ import {
 import { StatusBadge } from "@/components/admin/status-badge";
 import { format } from "date-fns";
 import { AdminAppointments } from "@/types/types";
+import { getDurationInMinutes } from "@/helper/calculate.duration";
 
 interface AppointmentDetailDialogProps {
   open: boolean;
@@ -35,18 +36,11 @@ export default function AppointmentDetailDialog({
 }: AppointmentDetailDialogProps) {
   if (!appointment) return null;
 
-  // Helper for duration calculation (since we have start/end strings)
-  const getDuration = (start: string, end: string) => {
-    if (!start || !end) return "N/A";
-    const [sH, sM] = start.split(":").map(Number);
-    const [eH, eM] = end.split(":").map(Number);
-    const diff = (eH * 60 + eM) - (sH * 60 + sM);
-    return `${diff} mins`;
-  };
+ console.log(appointment);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[550px] h-[80vh] flex flex-col p-0 border-slate-200 shadow-2xl overflow-hidden">
+      <DialogContent aria-describedby="View Appointment Details" className="sm:max-w-[550px] h-[80vh] flex flex-col p-0 border-slate-200 shadow-2xl overflow-hidden">
         
         {/* Static Header */}
         <DialogHeader className="p-6 border-b bg-white shrink-0">
@@ -78,7 +72,7 @@ export default function AppointmentDetailDialog({
                   <Clock className="h-4 w-4 text-indigo-500" />
                   {appointment.startTime} - {appointment.endTime} 
                   <span className="text-[10px] text-slate-400 font-normal ml-1">
-                    ({getDuration(appointment.startTime, appointment.endTime)})
+                    ({getDurationInMinutes(appointment.startTime, appointment.endTime)}m)
                   </span>
                 </div>
               </div>
@@ -159,12 +153,14 @@ export default function AppointmentDetailDialog({
                 <p className="text-slate-400 font-bold uppercase mb-1">Created At</p>
                 <p className="text-slate-600">{format(new Date(appointment.createdAt), "PPp")}</p>
               </div>
-              <div>
+              {appointment?.confirmationDeadline && (
+                <div>
                 <p className="text-slate-400 font-bold uppercase mb-1">Confirmation Deadline</p>
                 <p className={`${new Date() > new Date(appointment.confirmationDeadline) ? 'text-red-500' : 'text-slate-600'}`}>
                   {format(new Date(appointment.confirmationDeadline), "PPp")}
                 </p>
               </div>
+              )}
             </div>
           </div>
 

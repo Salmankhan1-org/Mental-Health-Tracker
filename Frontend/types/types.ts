@@ -185,6 +185,7 @@ export interface AdminCounsellors{
   yearsOfExperience: number,
   name: string,
   email: string,
+  userId: string,
   profileImage:string,
   licenseNumber: string
   location: string

@@ -75,7 +75,7 @@ exports.UpdateUserStatusController = async(request, response)=>{
         // Invalidate Redis user cache
         await redisClient.del(redisKey);
 
-        await LogController(request, 'status-change','success', `${user.name}'s Status has been change to ${status}. ${status !== 'active' ? `${reason}`:''}`);
+        await LogController(request, 'Status Updated','success', `${user.name}'s Status has been change to ${status}. ${status !== 'active' ? `${reason}`:''}`);
 
         return response.status(200).json({
             statusCode: 200,
