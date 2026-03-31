@@ -1,10 +1,8 @@
 const IORedis = require("ioredis");
 
-const bullMQRedisConnection = new IORedis({
-    host: "127.0.0.1",
-    port: 6379,
+const bullMQRedisConnection = new IORedis(process.env.REDIS_URL,{
     maxRetriesPerRequest: null, 
-    enableOfflineQueue: true, 
+    // enableOfflineQueue: true, 
 });
 
 bullMQRedisConnection.on("connect", () => console.log("✅IO Redis connected.........."));
