@@ -3,7 +3,7 @@ const { generateUsingAI } = require("../../utils/AI/gemini.ai")
 const mongoose = require("mongoose")
 const { GetUserId, GetUserEmail } = require("../../utils/User/get.user.id")
 const LogController = require("../System/logs/log.controller")
-const Chat = require("../../models/message.schema")
+const Chat = require("../../models/AI/message.schema")
 
 exports.AIChatController = async (request, response) => {
   try {

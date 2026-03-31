@@ -1,5 +1,5 @@
 const Communication = require("../../../models/system/communication.model");
-const User = require("../../../models/userModel");
+const User = require("../../../models/User/userModel");
 const { AdminMessageEmailTemplate } = require("../../../templates/admin.message.email.template");
 const { sendEmail } = require("../../../utils/System/send.email");
 const { GetUserId, GetUserEmail } = require("../../../utils/User/get.user.id");

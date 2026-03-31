@@ -1,6 +1,6 @@
 const Appointment = require("../../../models/Counsellors/appointment.model");
 const Availability = require("../../../models/Counsellors/availability.model");
-const User = require("../../../models/userModel");
+const User = require("../../../models/User/userModel");
 const AppointmentRequestEmailTemplate = require("../../../templates/appointment.requested.by.user.template");
 const { sendEmail } = require("../../../utils/System/send.email");
 const { GetUserId, GetUserEmail } = require("../../../utils/User/get.user.id");

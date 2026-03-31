@@ -1,7 +1,7 @@
 
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../../utils/JWT/generate.jwt.token");
-const User = require("../../models/userModel");
+const User = require("../../models/User/userModel");
 
 exports.CreateUserAccountController = async (request, response) => {
     try {

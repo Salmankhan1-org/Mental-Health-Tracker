@@ -1,5 +1,5 @@
 const Appointment = require("../../models/Counsellors/appointment.model");
-const User = require("../../models/userModel");
+const User = require("../../models/User/userModel");
 const { GetUserId } = require("../../utils/User/get.user.id");
 
 

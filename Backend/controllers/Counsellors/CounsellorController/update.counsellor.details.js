@@ -1,6 +1,6 @@
 const redisClient = require("../../../config/redis");
 const Counsellor = require("../../../models/Counsellors/counsellor.model");
-const User = require("../../../models/userModel");
+const User = require("../../../models/User/userModel");
 const { GetCounsellorId } = require("../../../utils/Counsellors/get.counselor.id");
 const { GetUserId } = require("../../../utils/User/get.user.id");
 

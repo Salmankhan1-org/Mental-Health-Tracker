@@ -1,4 +1,4 @@
-const Feedback = require("../../models/user.feedback.schema")
+const Feedback = require("../../models/User/user.feedback.schema")
 
 exports.GetUsersFeedbacks = async(request, response)=>{
     try {

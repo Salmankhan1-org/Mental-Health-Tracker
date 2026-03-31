@@ -1,6 +1,6 @@
 const Appointment = require("../../models/Counsellors/appointment.model");
 const Report = require("../../models/system/report.model");
-const User = require("../../models/userModel");
+const User = require("../../models/User/userModel");
 
 // Helper to calculate percentage growth
 const calculateGrowth = (current, previous) => {

@@ -1,4 +1,4 @@
-const MoodEntry = require("../../models/mood.entry.schema")
+const MoodEntry = require("../../models/AI/mood.entry.schema")
 const mongoose = require('mongoose');
 const { GetUserId } = require("../../utils/User/get.user.id");
 const redisClient = require("../../config/redis");

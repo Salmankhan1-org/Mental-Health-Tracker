@@ -1,4 +1,4 @@
-const Feedback = require("../../models/user.feedback.schema");
+const Feedback = require("../../models/User/user.feedback.schema");
 const { generateUsingAI } = require("../../utils/AI/gemini.ai");
 const { GetFeedbackSentimentPrompt } = require("../../utils/Prompts/feedback.sentiment.prompt");
 const { GetUserId, GetUserEmail } = require("../../utils/User/get.user.id");

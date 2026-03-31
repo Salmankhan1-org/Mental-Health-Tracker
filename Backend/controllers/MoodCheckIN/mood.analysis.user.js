@@ -1,5 +1,6 @@
+const { GuidanceQueue } = require("../../config/generate.quidance.queue");
 const redisClient = require("../../config/redis");
-const MoodEntry = require("../../models/mood.entry.schema");
+const MoodEntry = require("../../models/AI/mood.entry.schema");
 const { generateUsingAI } = require("../../utils/AI/gemini.ai");
 const { MoodCheckInPrompt } = require("../../utils/Prompts/mood.checkin.prompt");
 const { GetUserId } = require("../../utils/User/get.user.id");
@@ -41,7 +42,13 @@ exports.MoodCheckInController = async(request, response ) => {
                     analysis
                 })
 
-                await LogController(request, "Mood Checked In", "success", `Logged Mood. Feeling ${moodEntry.selectedMood}`);
+                // Offer Tailored Guidance to user based on Mood Status
+                await GuidanceQueue.add('generate-guidance', {
+                    userId,
+                    moodEntryId: moodEntry._id
+                });
+
+                await LogController(request, `Mood Checked In by ${request?.user?.name}`, "success", `Logged Mood. Feeling ${moodEntry.selectedMood}`);
 
                 // Delete weekly Mood stats Data from redis
                 const weeklyMoodStatsRedisKey = `weekly-mood-stats:${userId}`;

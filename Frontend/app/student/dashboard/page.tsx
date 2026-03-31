@@ -1,4 +1,5 @@
 "use client"
+import DailyGuidance from "@/components/student/dashboard/daily-guidance";
 import { WeeklyMoodData } from "@/components/student/dashboard/mood-chart";
 import { Stats } from "@/components/student/dashboard/wellbeing-score";
 import {SentimentData, type RecentActivity } from "@/types/types";
@@ -123,8 +124,6 @@ export default function DashboardPage() {
 
 
 
-
-
   useEffect(() => {
     const loadData = async () => {
 		setSentimentDataLoading(true);
@@ -148,6 +147,8 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Left column */}
           <div className="flex flex-col gap-6 lg:col-span-2">
+            {/* Daily Guidance  */}
+            <DailyGuidance/>
             <MoodCheckin 
 				fetchWeeklyMoodData={fetchWeeklyMoodData} 
 				fetchRecentActivities={fetchRecentActivities} 

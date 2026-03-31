@@ -1,6 +1,6 @@
 // Is User Already checked in today or not
 
-const MoodEntry = require("../../models/mood.entry.schema");
+const MoodEntry = require("../../models/AI/mood.entry.schema");
 const { GetUserId } = require("../../utils/User/get.user.id")
 
 exports.IsUserAlreadyCheckedInTodayController = async(request, response)=>{

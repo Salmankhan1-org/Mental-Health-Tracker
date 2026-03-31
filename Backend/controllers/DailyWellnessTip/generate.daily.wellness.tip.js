@@ -1,5 +1,5 @@
-const DailyWellnessTip = require("../../models/daily.wellness.tip.model");
-const MoodEntry = require("../../models/mood.entry.schema");
+const DailyWellnessTip = require("../../models/AI/daily.wellness.tip.model");
+const MoodEntry = require("../../models/AI/mood.entry.schema");
 const { generateUsingAI } = require("../../utils/AI/gemini.ai");
 const { GetWellnessTipPrompt } = require("../../utils/Prompts/wellness.tip.prompt");
 const { GetUserId, GetUserEmail } = require("../../utils/User/get.user.id");

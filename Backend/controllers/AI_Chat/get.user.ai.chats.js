@@ -1,4 +1,4 @@
-const Chat = require("../../models/message.schema");
+const Chat = require("../../models/AI/message.schema");
 const { GetUserId, GetUserEmail } = require("../../utils/User/get.user.id");
 const LogController = require("../System/logs/log.controller");
 

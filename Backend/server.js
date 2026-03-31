@@ -3,7 +3,9 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { connectDB } = require("./config/connectDB");
 require("dotenv").config();
+// later use a scripts to run these using npm
 require('./workers/cron.worker.js');
+require('./workers/generate.guidance.worker.js');
 
 const AIChatRoutes = require("./routes/AI_Chats/routes.ai.chat");
 const UserRoutes = require("./routes/User/routes.user")

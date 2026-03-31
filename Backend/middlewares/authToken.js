@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { GetAccessToken } = require("../utils/JWT/get.token.jwt");
-const User = require("../models/userModel");
+const User = require("../models/User/userModel");
 const redisClient = require("../config/redis");
 
 const RestrictedUserStatus = ['inactive','suspended'];

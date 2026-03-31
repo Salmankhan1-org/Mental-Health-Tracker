@@ -1,4 +1,4 @@
-const User = require("../../models/userModel");
+const User = require("../../models/User/userModel");
 
 exports.DeleteUserByAdminController = async (request, response) => {
     try {

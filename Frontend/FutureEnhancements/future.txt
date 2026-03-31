@@ -10,6 +10,5 @@
 4. Counsellor can upload their holiday calender which will restrict those holiday days for users to book
    appointment with the same
 
-5. Use worker queues like bullMQ by redis to handle the concurrent email sending to user
 
 

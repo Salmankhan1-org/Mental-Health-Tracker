@@ -1,4 +1,4 @@
-const User = require("../../models/userModel");
+const User = require("../../models/User/userModel");
 const { GetUserEmail } = require("../../utils/User/get.user.id");
 const LogController = require("../System/logs/log.controller");
 const UserStatusUpdateEmailTemplate = require('../../templates/user.status.updated.email.template');
