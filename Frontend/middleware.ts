@@ -35,6 +35,7 @@ export async function middleware(request: NextRequest) {
 
     for (const route in roleRoutes) {
         if (pathname.startsWith(route) && role !== roleRoutes[route]) {
+          console.log(roleRoutes[route]);
             return NextResponse.redirect(new URL("/unauthorized", request.url))
         }
     }

@@ -10,8 +10,8 @@ exports.generateToken = async (res, user, statusCode, message) => {
 
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // HTTPS in prod
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: true, // HTTPS in prod
+    sameSite: 'none',
     path: "/"
   };
 
