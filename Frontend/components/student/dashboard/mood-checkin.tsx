@@ -22,8 +22,9 @@ export interface MoodCheckInProps{
   fetchRecentActivities: ()=>void,
   fetchWeeklySentimentData: ()=>void,
   fetchRecentEmotions: ()=>void
+  fetchGuidance: ()=>void
 }
-export default function MoodCheckin({fetchWeeklyMoodData,fetchRecentActivities,fetchWeeklySentimentData,fetchRecentEmotions}:MoodCheckInProps) {
+export default function MoodCheckin({fetchWeeklyMoodData,fetchRecentActivities,fetchWeeklySentimentData,fetchRecentEmotions, fetchGuidance}:MoodCheckInProps) {
   const [selectedMood, setSelectedMood] = useState<string | null>(null)
   const [note, setNote] = useState("")
   const [submitted, setSubmitted] = useState(false);
@@ -51,6 +52,7 @@ export default function MoodCheckin({fetchWeeklyMoodData,fetchRecentActivities,f
         setSubmitted(true)
         setSelectedMood(null)
         setNote("")
+        fetchGuidance();
         fetchWeeklyMoodData()
         fetchWeeklySentimentData()
         fetchRecentActivities()

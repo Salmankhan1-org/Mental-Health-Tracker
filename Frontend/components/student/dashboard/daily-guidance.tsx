@@ -18,36 +18,13 @@ import { cn } from "@/lib/utils";
 import { GuidanceSkeleton } from "./daily-guidance-skeleton";
 import Link from "next/link";
 
-const DailyGuidance = () => {
-  const [guidance, setGuidance] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
+interface DailyGuidanceParams{
+    loading: boolean
+    guidance: any
+}
 
-  const fetchGuidance = useCallback(async () => {
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/mood/guidance/latest`, {
-        withCredentials: true,
-      });
-
-      if (response.data.success && response.data.data) {
-        setGuidance(response.data.data);
-        setLoading(false);
-      } else if (retryCount < 5) {
-        
-        setTimeout(() => setRetryCount((prev) => prev + 1), 5000);
-      } else {
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("Guidance fetch error:", error);
-      setLoading(false);
-    }
-  }, [retryCount]);
-
-  useEffect(() => {
-    fetchGuidance();
-  }, [fetchGuidance]);
-
+const DailyGuidance = ({loading,guidance}:DailyGuidanceParams) => {
+  
   if (loading) return <GuidanceSkeleton />;
   if (!guidance) return null;
 

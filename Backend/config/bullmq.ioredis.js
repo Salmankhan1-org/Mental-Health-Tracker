@@ -1,11 +1,33 @@
 const IORedis = require("ioredis");
 
-const bullMQRedisConnection = new IORedis(process.env.REDIS_URL,{
+
+const isProduction = process.env.NODE_ENV === "production";
+
+
+const redisOptions = isProduction 
+    ? process.env.REDIS_URL 
+    : {
+        host: "127.0.0.1",
+        port: 6379,
+      };
+
+
+const bullMQRedisConnection = new IORedis(redisOptions, {
     maxRetriesPerRequest: null, 
-    // enableOfflineQueue: true, 
+    enableOfflineQueue: true,
+    ...(isProduction && {
+        tls: {
+            rejectUnauthorized: false 
+        }
+    })
 });
 
-bullMQRedisConnection.on("connect", () => console.log("✅IO Redis connected.........."));
-bullMQRedisConnection.on("error", (err) => console.error("IO Redis error:", err));
+bullMQRedisConnection.on("connect", () => {
+    console.log(`✅ IO Redis connected (${isProduction ? 'Production/Upstash' : 'Localhost'})`);
+});
 
-module.exports = bullMQRedisConnection
+bullMQRedisConnection.on("error", (err) => {
+    console.error("❌ IO Redis error:", err);
+});
+
+module.exports = bullMQRedisConnection;

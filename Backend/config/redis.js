@@ -1,7 +1,10 @@
 const { createClient } = require("redis");
 
+
+const isProduction = process.env.NODE_ENV === 'production';
+
 const redisClient = createClient({
-  url: process.env.REDIS_URL
+  url: isProduction ? process.env.REDIS_URL : "redis://127.0.0.1:6379"
 });
 
 redisClient.on("error", (err) => {
@@ -10,7 +13,7 @@ redisClient.on("error", (err) => {
 
 (async () => {
   await redisClient.connect();
-  console.log("✅ Redis connected");
+  console.log(`✅ Redis connected (${isProduction ? 'Production/Upstash' : 'Localhost'})`);
 })();
 
 module.exports = redisClient;

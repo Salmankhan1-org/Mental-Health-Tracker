@@ -5,7 +5,7 @@ import { Stats } from "@/components/student/dashboard/wellbeing-score";
 import {SentimentData, type RecentActivity } from "@/types/types";
 import axios from "axios";
 import dynamic from "next/dynamic"
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const DashBoardHeader = dynamic(()=>import('@/components/student/dashboard/dashboard-header'));
 const MoodCheckin  = dynamic(()=>import("@/components/student/dashboard/mood-checkin"))
@@ -21,14 +21,18 @@ const RecentActivity = dynamic(()=>import('@/components/student/dashboard/recent
 // }
 
 export default function DashboardPage() {
-  const [moodData, setMoodData] = useState<WeeklyMoodData[]>([]);
-  const [moodDataloading, setMoodDataLoading] = useState(false);
-  const [activities, setActivities] = useState<RecentActivity[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null)
-  const [wellBeingScoreLoading, setWellBeingScoreLoading] = useState(true)
-  const [sentimentData, setSentimentData] = useState<SentimentData[]>([]);
-  const [recentEmotions, setRecentEmotions] = useState([]);
-  const [sentimentDataLoading, setSentimentDataLoading] = useState(false);
+	const [moodData, setMoodData] = useState<WeeklyMoodData[]>([]);
+	const [moodDataloading, setMoodDataLoading] = useState(false);
+	const [activities, setActivities] = useState<RecentActivity[]>([]);
+	const [stats, setStats] = useState<Stats | null>(null)
+	const [wellBeingScoreLoading, setWellBeingScoreLoading] = useState(true)
+	const [sentimentData, setSentimentData] = useState<SentimentData[]>([]);
+	const [recentEmotions, setRecentEmotions] = useState([]);
+	const [sentimentDataLoading, setSentimentDataLoading] = useState(false);
+	// Daily Suggestions
+	const [guidance, setGuidance] = useState<any>(null);
+	const [loading, setLoading] = useState(true);
+	const [retryCount, setRetryCount] = useState(0);
 
   const fetchWeeklyMoodData = async()=>{
     try {
@@ -137,6 +141,34 @@ export default function DashboardPage() {
     loadData()
   }, []);
 
+
+  // Daily Suggestions
+  
+    const fetchGuidance = useCallback(async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/mood/guidance/latest`, {
+          withCredentials: true,
+        });
+  
+        if (response.data.success && response.data.data) {
+          setGuidance(response.data.data);
+          setLoading(false);
+        } else if (retryCount < 5) {
+          
+          setTimeout(() => setRetryCount((prev) => prev + 1), 5000);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Guidance fetch error:", error);
+        setLoading(false);
+      }
+    }, [retryCount]);
+  
+    useEffect(() => {
+      fetchGuidance();
+    }, [fetchGuidance]);
+
   return (
     <div className="px-4 py-8 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -148,12 +180,13 @@ export default function DashboardPage() {
           {/* Left column */}
           <div className="flex flex-col gap-6 lg:col-span-2">
             {/* Daily Guidance  */}
-            <DailyGuidance/>
+            <DailyGuidance loading={loading} guidance={guidance}/>
             <MoodCheckin 
 				fetchWeeklyMoodData={fetchWeeklyMoodData} 
 				fetchRecentActivities={fetchRecentActivities} 
 				fetchWeeklySentimentData={fetchWeeklySentimentData}
 				fetchRecentEmotions={fetchRecentEmotions}
+				fetchGuidance = {fetchGuidance}
 				/>
             <MoodChart moodData={moodData} loading={moodDataloading} />
             <RecentActivity activities={activities} />
