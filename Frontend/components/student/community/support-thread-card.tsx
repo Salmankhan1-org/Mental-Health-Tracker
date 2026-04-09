@@ -17,6 +17,7 @@ interface SupportThreadCardProps {
   onSupport: (id: string) => void
   onRelate: (id: string) => void
   onHug: (id: string) => void
+  onViewReplies: (id: string) => void
   index?: number
 }
 
@@ -41,6 +42,7 @@ export function SupportThreadCard({
   onSupport,
   onRelate,
   onHug,
+  onViewReplies,
   index = 0,
 }: SupportThreadCardProps) {
   const getInitial = (name: string) => name.charAt(0).toUpperCase()
@@ -130,8 +132,9 @@ export function SupportThreadCard({
           </button>
 
           <button
+            onClick={() => onViewReplies(id)}
             className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-teal-50 transition-colors group"
-            aria-label="Reply to this thread"
+            aria-label="View and reply to this thread"
           >
             <MessageCircle size={18} className="group-hover:text-teal-600 transition-colors" />
             <span className="text-sm font-medium group-hover:text-teal-600 transition-colors">
