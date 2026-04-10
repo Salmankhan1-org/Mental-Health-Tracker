@@ -6,6 +6,7 @@ require("dotenv").config();
 // later use a scripts to run these using npm
 require('./workers/cron.worker.js');
 require('./workers/generate.guidance.worker.js');
+require('./workers/analyze.thread.worker.js');
 
 const AIChatRoutes = require("./routes/AI_Chats/routes.ai.chat");
 const UserRoutes = require("./routes/User/routes.user")
@@ -16,6 +17,10 @@ const CounsellorsRoutes = require('./routes/Counsellors/routes.counsellor');
 const AvailabilityRoutes = require('./routes/Counsellors/counsellor.availability.routes');
 const GlobalErrorHandler = require("./middlewares/error.handler");
 const AppointmentRoutes = require('./routes/Counsellors/counsellor.appointment.routes');
+const CommunityRoutes = require('./routes/community/routes.community.js');
+
+
+
 const { CancelExpiredAppointments } = require("./cron-jobs/cancel.expire.appointments");
 const { AppointmentReminderCron } = require("./cron-jobs/appointment.reminder");
 const { AutoCompleteAppointments } = require("./cron-jobs/auto.complete.appointment");
@@ -49,6 +54,7 @@ app.use('/api/v1/feedback', UserFeedbackRoutes);
 app.use('/api/v1/counsellors', CounsellorsRoutes)
 app.use('/api/v1/availability', AvailabilityRoutes);
 app.use('/api/v1/appointment',AppointmentRoutes);
+app.use('/api/v1/community', CommunityRoutes);
 
 
 // CRON Jobs

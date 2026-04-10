@@ -1,61 +1,71 @@
-exports.MoodCheckInPrompt = (mood,note)=>{
-    return `You are an emotional wellness AI assistant.
+exports.MoodCheckInPrompt = (mood, note, questionsAndAnswers = []) => {
+  return `
+    You are an emotional wellness AI assistant.
 
-        Your task is to analyze a user's selected mood and their description of how they feel.
+    Your task is to analyze a user's emotional state based on:
+    1. Selected mood
+    2. Personal note
+    3. Answers to follow-up questions
 
-        INPUT:
-        - mood: One of ["great", "good", "okay", "low", "struggling"]
-        - description: A short personal note written by the user.
+    ------------------------
+    INPUT:
 
-        Analyze the emotional state and return ONLY valid JSON.
+    Mood: "${mood}"
 
-        IMPORTANT RULES:
-        - Do NOT include explanations.
-        - Do NOT include markdown.
-        - Do NOT include text outside JSON.
-        - Return strictly valid JSON.
+    Note: "${note || "No note provided"}"
 
-        OUTPUT FORMAT:
+    Follow-up Responses:
+    ${questionsAndAnswers.length > 0
+    ? questionsAndAnswers
+        .map((q, i) => `${i + 1}. ${q.question} → ${q.answer}`)
+        .join("\n")
+    : "No follow-up responses provided"}
+    ------------------------
 
-        {
-        "moodScore": number,                // decimal between 1 and 5
-        "stressLevel": number,              // decimal between 1 and 5
-        "sentiment": "positive" | "neutral" | "negative",
-        "detectedEmotions": [string],       // 3-6 short emotion words
-        "emotionalBalanceScore": number,    // integer between 0 and 100
-        "insight": string,                  // one short supportive sentence
-        "confidence": number                // decimal between 0 and 1
-        }
+    INSTRUCTIONS:
 
-        SCORING GUIDELINES:
+    - Use ALL inputs (mood + note + answers)
+    - Answers should influence the final analysis strongly
+    - Be empathetic, realistic, and balanced
+    - Do NOT exaggerate emotions
+    - Do NOT provide medical diagnosis
 
-        Mood Mapping Reference:
-        - "great" → typically 5
-        - "good" → typically 4
-        - "okay" → typically 3
-        - "low" → typically 2
-        - "struggling" → typically 1
+    ------------------------
 
-        However, description must influence the final score.
+    RETURN ONLY VALID JSON:
 
-        Stress Level:
-        1 = very calm
-        5 = very stressed
+    {
+    "moodScore": number,                
+    "stressLevel": number,              
+    "sentiment": "positive" | "neutral" | "negative",
+    "detectedEmotions": [string],       
+    "emotionalBalanceScore": number,    
+    "insight": string,                  
+    "confidence": number                
+    }
 
-        Sentiment:
-        positive = optimistic, happy, hopeful
-        neutral = balanced, stable
-        negative = sad, anxious, overwhelmed, angry
+    ------------------------
 
-        emotionalBalanceScore:
-        0 = emotionally distressed
-        100 = emotionally thriving
+    RULES:
 
-        insight:
-        Must be supportive, non-judgmental, and no more than 20 words.
+    - moodScore: 1–5 (can be decimal)
+    - stressLevel: 1–5
+    - emotionalBalanceScore: 0–100
+    - confidence: 0–1
 
-        Now analyze:
+    - detectedEmotions: 3–6 short words (e.g., "anxious", "hopeful")
 
-        mood: "${mood}"
-        note: "${note}"`
+    - insight:
+    - max 20 words
+    - supportive tone
+    - no advice like "you should"
+    - no diagnosis
+
+    - DO NOT include:
+    - explanations
+    - markdown
+    - extra text
+
+    Return ONLY JSON.
+    `
 }

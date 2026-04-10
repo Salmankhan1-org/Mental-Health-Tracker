@@ -12,6 +12,7 @@ import { ApiErrorResponse } from '@/types/types'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { setUser } from '@/features/users/authSlice'
+import { ToastFunction } from '@/helper/toast-function'
 
 interface Payload{
     email : string,
@@ -45,7 +46,10 @@ export function LoginForm() {
             const userData = response.data.data;
             dispatch(setUser(userData))
             if (userData.role === "student") {
-              router.push("/student/dashboard")
+              if(!userData?.onboardingCompleted){
+                router.push("/onboarding")
+              }
+              router.push("/student/dashboard");
             } else if (userData.role === "counsellor") {
               router.push("/counsellor/dashboard")
             } else if (userData.role === "admin") {
@@ -59,8 +63,7 @@ export function LoginForm() {
             const apiError = error.response?.data
             setError(apiError?.error[0]?.message || "Error occured during login");
 
-            console.log(apiError?.statusCode)
-            console.log(apiError?.error[0].message)
+            ToastFunction('error', error);
         }
     }finally{
         setIsLoading(false);

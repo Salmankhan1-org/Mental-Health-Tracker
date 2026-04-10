@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import axios from "axios"
 import { ApiErrorResponse } from "@/types/types"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 const moods = [
   { value: 5, label: "Great", color: "bg-chart-2" },
@@ -18,17 +19,14 @@ const moods = [
 
 
 export interface MoodCheckInProps{
-  fetchWeeklyMoodData: ()=>void,
-  fetchRecentActivities: ()=>void,
-  fetchWeeklySentimentData: ()=>void,
-  fetchRecentEmotions: ()=>void
   fetchGuidance: ()=>void
 }
-export default function MoodCheckin({fetchWeeklyMoodData,fetchRecentActivities,fetchWeeklySentimentData,fetchRecentEmotions, fetchGuidance}:MoodCheckInProps) {
+export default function MoodCheckin({ fetchGuidance}:MoodCheckInProps) {
   const [selectedMood, setSelectedMood] = useState<string | null>(null)
   const [note, setNote] = useState("")
   const [submitted, setSubmitted] = useState(false);
   const [loading ,setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!selectedMood || loading) return
@@ -37,7 +35,7 @@ export default function MoodCheckin({fetchWeeklyMoodData,fetchRecentActivities,f
       setLoading(true)
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_HOST}/mood/check-in`,
+        `${process.env.NEXT_PUBLIC_API_HOST}/mood/check-in/start`,
         {
           mood: selectedMood.toLowerCase(),
           note: note.toLowerCase(),
@@ -49,15 +47,9 @@ export default function MoodCheckin({fetchWeeklyMoodData,fetchRecentActivities,f
       )
 
       if (response?.data.success) {
-        setSubmitted(true)
-        setSelectedMood(null)
-        setNote("")
-        fetchGuidance();
-        fetchWeeklyMoodData()
-        fetchWeeklySentimentData()
-        fetchRecentActivities()
-        fetchRecentEmotions()
         toast.success(response?.data?.message)
+        fetchGuidance();
+        router.push(`/student/dashboard/${response?.data?.data?.moodEntryId}`)
       }
     } catch (error: any) {
       if (axios.isAxiosError<ApiErrorResponse>(error)) {

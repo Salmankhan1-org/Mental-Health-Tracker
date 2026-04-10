@@ -181,13 +181,9 @@ export default function DashboardPage() {
           <div className="flex flex-col gap-6 lg:col-span-2">
             {/* Daily Guidance  */}
             <DailyGuidance loading={loading} guidance={guidance}/>
-            <MoodCheckin 
-				fetchWeeklyMoodData={fetchWeeklyMoodData} 
-				fetchRecentActivities={fetchRecentActivities} 
-				fetchWeeklySentimentData={fetchWeeklySentimentData}
-				fetchRecentEmotions={fetchRecentEmotions}
-				fetchGuidance = {fetchGuidance}
-				/>
+            <MoodCheckin
+				    fetchGuidance = {fetchGuidance}
+				    />
             <MoodChart moodData={moodData} loading={moodDataloading} />
             <RecentActivity activities={activities} />
           </div>

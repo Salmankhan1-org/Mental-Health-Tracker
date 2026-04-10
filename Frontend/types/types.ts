@@ -235,3 +235,58 @@ export interface UserReports{
   createdAt: string | Date
   description: string
 }
+
+
+
+export interface ThreadUser {
+  _id: string;
+  name: string;
+  avatar?: string;
+  isVerified?: boolean;
+}
+
+export interface ThreadStats {
+  supportCount: number;
+  relateCount: number;
+  hugCount: number;
+  replyCount: number;
+  viewCount: number;
+}
+
+export interface ThreadAI {
+  sentiment: 'positive' | 'neutral' | 'negative';
+  emotionTags: string[];
+  riskLevel: 'low' | 'medium' | 'high';
+}
+
+export interface Thread {
+  _id: string;
+  user: ThreadUser | string; // Can be ID or populated object
+  isAnonymous: boolean;
+  anonymousIdentity?: string | null;
+  moodLabel: string;
+  topic: string;
+  content: string;
+  tags: string[];
+  stats: ThreadStats;
+  isMine: boolean,
+  moderation: {
+    isFlagged: boolean;
+    isSensitive: boolean;
+    flaggedReason?: string | null;
+  };
+  aiMeta?: ThreadAI;
+  status: 'active' | 'hidden' | 'deleted';
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+export interface SelectedThread{
+  _id: string,
+  moodLabel: string,
+  topic: string,
+  isAnonymous: boolean,
+  content: string
+}

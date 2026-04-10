@@ -22,6 +22,7 @@ const navLinks = [
   { href: "/student/chat", label: "AI Support" },
   { href: "/student/resources", label: "Wellness" },
   { href: "/student/counselors", label: "Counselors" },
+  { href: "/student/community", label: "Community" },
 ]
 
 export function Navbar() {

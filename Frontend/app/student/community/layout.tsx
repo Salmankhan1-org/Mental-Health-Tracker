@@ -3,7 +3,8 @@ import { Navbar } from "@/components/common/navbar"
 import ProtectedRoute from "@/components/system/protected-route"
 
 
-export default function DashboardLayout({
+
+export default function CommunityLayout({
   children,
 }: {
   children: React.ReactNode

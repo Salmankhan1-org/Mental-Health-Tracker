@@ -2,6 +2,19 @@ const mongoose = require("mongoose")
 
 const { Schema } = mongoose
 
+const qaSchema = new Schema(
+  {
+    question: { type: String, required: true },
+
+    // store selected option OR text
+    answer: { type: String, default: "" },
+
+    // optional: for UI rendering (buttons)
+    options: [{ type: String }],
+  },
+  { _id: false }
+)
+
 const MoodEntrySchema = new Schema(
   {
     //  Reference to User
@@ -25,26 +38,45 @@ const MoodEntrySchema = new Schema(
       maxlength: 2000,
     },
 
+    // 🧠 AI Question Flow
+    questionsAndAnswers: {
+      type: [qaSchema],
+      default: [],
+    },
+
+    // 📊 Session State
+    sessionStatus: {
+      type: String,
+      enum: ["in-progress", "completed"],
+      default: "in-progress",
+      index: true,
+    },
+
+    currentQuestionIndex: {
+      type: Number,
+      default: 0,
+    },
+
     //  AI Analysis (Nested Object)
     analysis: {
       moodScore: {
         type: Number,
         min: 1,
         max: 5,
-        required: true,
+
       },
 
       stressLevel: {
         type: Number,
         min: 1,
         max: 5,
-        required: true,
+
       },
 
       sentiment: {
         type: String,
         enum: ["positive", "neutral", "negative"],
-        required: true,
+
       },
 
       detectedEmotions: {
@@ -56,12 +88,12 @@ const MoodEntrySchema = new Schema(
         type: Number,
         min: 0,
         max: 100,
-        required: true,
+
       },
 
       insight: {
         type: String,
-        required: true,
+
       },
 
       confidence: {
@@ -86,6 +118,7 @@ const MoodEntrySchema = new Schema(
 // Performance Indexes (Important for Dashboard)
 
 MoodEntrySchema.index({ user: 1, createdAt: -1 })
+MoodEntrySchema.index({ user: 1, sessionStatus: 1 })
 MoodEntrySchema.index({ user: 1, "analysis.sentiment": 1 })
 MoodEntrySchema.index({ user: 1, "analysis.moodScore": 1 })
 

@@ -22,6 +22,7 @@ const { ContactToCounsellorController } = require("../../controllers/Counsellors
 const { GetCriticalReportsController } = require("../../controllers/System/reports/get.critical.reports");
 const { GetRecentActivitiesController } = require("../../controllers/System/logs/get.recent.activities.controller");
 const { GetAdminDashboardStatsController } = require("../../controllers/Users/get.admin.dashboard.stats.controller");
+const {  SaveUserOnboardingDetailsController } = require("../../controllers/Users/save.user.onboarding.details.controller");
 const router = express.Router();
 
 
@@ -43,6 +44,11 @@ router.get("/user/details",
     isAuthenticated, 
     GetUserDetailsController
 );
+
+router.post('/onboarding/save',
+    isAuthenticated,
+    SaveUserOnboardingDetailsController
+)
 
 router.get('/admin/filter-reports',
     isAuthenticated,

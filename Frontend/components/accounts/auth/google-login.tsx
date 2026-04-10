@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '@/features/users/authSlice';
 import { useRouter } from 'next/navigation';
 import { ApiErrorResponse } from '@/types/types';
+import { ToastFunction } from '@/helper/toast-function';
  
 function GoogleLogin() {
     const dispatch = useDispatch();
@@ -40,7 +41,10 @@ function GoogleLogin() {
         const userData = response.data.data;
         dispatch(setUser(userData))
         if (userData.role === "student") {
-          router.push("/student/dashboard")
+           if(!userData?.onboardingCompleted){
+            router.push("/onboarding")
+           }
+           router.push("/student/dashboard");
         } else if (userData.role === "counsellor") {
           router.push("/counsellor/dashboard")
         } else if (userData.role === "admin") {
@@ -49,12 +53,7 @@ function GoogleLogin() {
         toast.success(response.data.message);
       }
     } catch (error:any) {
-       if (axios.isAxiosError<ApiErrorResponse>(error)) {
-            const apiError = error.response?.data
-
-            console.log(apiError?.statusCode)
-            console.log(apiError?.error[0].message)
-        }
+       ToastFunction('error', error);
     }
   };
   return (

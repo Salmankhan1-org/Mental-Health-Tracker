@@ -2,63 +2,96 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
-    maxlength: 50
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, // email regex
-    index: true
-  },
-  password: {
-    type: String,
-    required: true,
-    select: false,
-    trim: true,
-    minlength: 6
-  },
-  role: {
-    type: String,
-    enum: ["student", "admin","counsellor"],
-    default: "student",
-    index: true
-  },
-  profileImage: {
-    type:String, trim:true
-  },
-  isActive : {
-    type: Boolean,
-    default : true
-  },
-  isDeleted : {
-    type : Boolean,
-    defaul : false
-  },
+	name: {
+		type: String,
+		required: true,
+		trim: true,
+		minlength: 2,
+		maxlength: 50
+	},
+	email: {
+		type: String,
+		required: true,
+		unique: true,
+		trim: true,
+		lowercase: true,
+		match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, // email regex
+		index: true
+	},
+	password: {
+		type: String,
+		required: true,
+		select: false,
+		trim: true,
+		minlength: 6
+	},
+	role: {
+		type: String,
+		enum: ["student", "admin","counsellor"],
+		default: "student",
+		index: true
+	},
+	profileImage: {
+		type:String, trim:true
+	},
+	isActive : {
+		type: Boolean,
+		default : true
+	},
+	isDeleted : {
+		type : Boolean,
+		defaul : false
+	},
 
-  status: {
-        type: String,
-        enum: ["active", "inactive", "suspended"],
-        default: "active",
-        lowercase: true,
-        trim: true
-    },
+	status: {
+		type: String,
+		enum: ["active", "inactive", "suspended"],
+		default: "active",
+		lowercase: true,
+		trim: true
+	},
 
-  // Password reset
-//   resetPasswordToken: { type: String, select: false },
-//   resetPasswordExpiry: { type: Date },
 
-  // Email verification
-//   isEmailVerified: { type: Boolean, default: false },
-//   emailVerificationCode: { type: String, select: false },
-//   emailVerificationExpiry: { type: Date }
+	preferences: {
+		goal: {
+			type: String,
+			enum: ["Stress", "Anxiety", "Focus", "Sleep", "Emotional Support"]
+		},
+
+		feeling: {
+			type: String,
+			enum: ["Calm", "Stressed", "Overwhelmed", "Anxious"]
+		},
+
+		habits: [{
+			type: String,
+			enum: ["Exercise", "Late nights", "High screen time", "Busy schedule"]
+		}],
+
+		aiTone: {
+			type: String,
+			enum: ["Friendly", "Professional", "Motivational", "Calm"]
+		},
+
+		supportType: {
+			type: String,
+			enum: ["Quick tips", "Deep chats", "Structured plans"]
+		}
+	},
+
+	onboardingCompleted: {
+		type: Boolean,
+		default: false
+	}
+
+	// Password reset
+	//   resetPasswordToken: { type: String, select: false },
+	//   resetPasswordExpiry: { type: Date },
+
+	// Email verification
+	//   isEmailVerified: { type: Boolean, default: false },
+	//   emailVerificationCode: { type: String, select: false },
+	//   emailVerificationExpiry: { type: Date }
 
 }, { timestamps: true });
 
