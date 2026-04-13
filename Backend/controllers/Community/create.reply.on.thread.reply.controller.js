@@ -1,20 +1,26 @@
-const Thread = require("../../models/Community/community.thread.model");
 const ThreadReply = require("../../models/Community/thread.reply.model");
+const Thread = require("../../models/Community/community.thread.model");
 const { GetUserId } = require("../../utils/User/get.user.id");
 
-exports.CreateNewReplyController = async (request, response) => {
+exports.CreateReplyForThreadReplyController = async (request, response) => {
     try {
-        const { threadId } = request.params;
+       
+        const { replyId } = request.params;
         const userId = GetUserId(request);
         const { content, isAnonymous } = request.body;
 
-        // 1. Validate Thread Existence
-        const threadExist = await Thread.findById(threadId).select('_id');
-        if (!threadExist) {
+       
+        const parentReplyDoc = await ThreadReply.findById(replyId).select('_id thread');
+        if (!parentReplyDoc) {
             return response.status(404).json({
                 statusCode: 404,
                 success: false,
-                error: [{ field: 'thread', message: "Thread not Found" }],
+                error: [
+                    { 
+                        field: 'threadReply', 
+                        message: "The comment you are replying to does not exist." 
+                    }
+                ],
                 message: ''
             });
         }
@@ -24,21 +30,25 @@ exports.CreateNewReplyController = async (request, response) => {
             return response.status(400).json({
                 statusCode: 400,
                 success: false,
-                error: [{ field: 'threadReply', message: "Reply content cannot be empty" }],
+                error: [
+                    { 
+                        field: 'content', 
+                        message: "Reply content cannot be empty" 
+                    }
+                ],
                 message: ''
             });
         }
 
-      
+        // 3. Identity Management (Consistency across this specific thread)
         let anonymousIdentity = null;
         if (isAnonymous) {
-            
-            const existingAnonymousReply = await ThreadReply.findOne({ 
-                thread: threadId, 
-                user: userId, 
-                isAnonymous: true 
+            const existingAnonymousReply = await ThreadReply.findOne({
+                thread: parentReplyDoc.thread,
+                user: userId,
+                isAnonymous: true
             }).select('anonymousIdentity');
-            
+
             if (existingAnonymousReply) {
                 anonymousIdentity = existingAnonymousReply.anonymousIdentity;
             } else {
@@ -47,17 +57,23 @@ exports.CreateNewReplyController = async (request, response) => {
             }
         }
 
-    
+      
         const [reply] = await Promise.all([
             ThreadReply.create({
                 user: userId,
-                thread: threadId,
+                thread: parentReplyDoc.thread, 
+                parentReply: replyId,         
                 content: content.trim(),
                 isAnonymous: !!isAnonymous,
                 anonymousIdentity: isAnonymous ? anonymousIdentity : null,
-                isEdited: false 
+                isEdited: false
             }),
-            Thread.findByIdAndUpdate(threadId, {
+            
+            ThreadReply.findByIdAndUpdate(replyId, {
+                $inc: { 'stats.replyCount': 1 }
+            }),
+            
+            Thread.findByIdAndUpdate(parentReplyDoc.thread, {
                 $inc: { 'stats.replyCount': 1 }
             })
         ]);
@@ -66,15 +82,20 @@ exports.CreateNewReplyController = async (request, response) => {
             statusCode: 201,
             success: true,
             error: [],
-            data: reply, 
-            message: 'Reply Created Successfully'
+            data: reply,
+            message: 'Nested Reply Created Successfully'
         });
 
     } catch (error) {
         return response.status(500).json({
             statusCode: 500,
             success: false,
-            error: [{ field: 'server', message: error.message || 'Internal Server Error' }],
+            error: [
+                { 
+                    field: 'server', 
+                    message: error.message 
+                }
+            ],
             message: ''
         });
     }

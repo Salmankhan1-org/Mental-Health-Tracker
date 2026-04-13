@@ -75,36 +75,6 @@ export function CommunitySupportInterface() {
         return () => clearTimeout(handler);
     }, [searchQuery]);
 
-  
-
-  const handleSupport = (id: string) => {
-    // setThreads(
-    //   threads.map((thread) =>
-    //     thread.id === id
-    //       ? { ...thread, supportCount: thread.supportCount + 1 }
-    //       : thread
-    //   )
-    // )
-  }
-
-  const handleRelate = (id: string) => {
-    // setThreads(
-    //   threads.map((thread) =>
-    //     thread.id === id
-    //       ? { ...thread, relateCount: thread.relateCount + 1 }
-    //       : thread
-    //   )
-    // )
-  }
-
-  const handleHug = (id: string) => {
-    // setThreads(
-    //   threads.map((thread) =>
-    //     thread.id === id ? { ...thread, hugCount: thread.hugCount + 1 } : thread
-    //   )
-    // )
-  }
-
 
   const handlePageClick = (event: { selected: number }) => {
     setPage(event.selected + 1);
@@ -286,9 +256,6 @@ export function CommunitySupportInterface() {
                     <SupportThreadCard
                       key={thread._id} // Changed to MongoDB _id
                       {...thread}
-                      onSupport={handleSupport}
-                      onRelate={handleRelate}
-                      onHug={handleHug}
                       handleFetchFilteredThreads={handleFetchFilteredThreads}
                       index={index}
                       setSelectedThread={setSelectedThread}

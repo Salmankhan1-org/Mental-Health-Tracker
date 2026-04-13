@@ -94,6 +94,10 @@ const threadSchema = new Schema(
         isMine:{ // if the requester is the owner of any thread
             type: Boolean,
             default: false
+        },
+        isEdited:{
+            type: Boolean,
+            default: false
         }
     },
     { timestamps: true }

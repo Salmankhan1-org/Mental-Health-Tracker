@@ -57,6 +57,10 @@ const replySchema = new Schema(
         isDeleted: {
             type: Boolean,
             default: false
+        },
+        isEdited: {
+            type: Boolean,
+            default: false
         }
     },
     { timestamps: true }

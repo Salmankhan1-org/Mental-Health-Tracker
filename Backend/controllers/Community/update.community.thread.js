@@ -31,7 +31,8 @@ exports.UpdateCommunityThreadController = async (request, response)=>{
             anonymousIdentity,
             content,
             moodLabel: emotion,
-            topic
+            topic,
+            isEdited: true
         },{returnDocument: 'after'});
 
 

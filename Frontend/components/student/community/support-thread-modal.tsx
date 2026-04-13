@@ -29,9 +29,6 @@ interface SupportThreadCardProps {
   anonymousIdentity: string,
   content: string,
   stats: ThreadStats, 
-  onSupport: (_id:string)=>void,
-  onRelate: (_id:string)=>void,
-  onHug : (_id:string)=>void,
   handleFetchFilteredThreads: ()=>void,
   setSelectedThread: (thread: SelectedThread) => void,
   index : number,
@@ -54,9 +51,6 @@ export function SupportThreadCard({
   content,
   isMine,
   stats, 
-  onSupport,
-  onRelate,
-  onHug,
   handleFetchFilteredThreads,
   setSelectedThread,
   index = 0,
@@ -66,6 +60,7 @@ export function SupportThreadCard({
   const [deleteId, setDeleteId] = useState('');
   const [isDeleting , setIsDeleting] = useState(false);
   const [openThreadDetailsModal, setOpenThreadDetailsModal] = useState(false);
+  const [threadStats, setThreadStats] = useState<ThreadStats>(stats);
 
 
   const onDelete = async (id:string)=>{
@@ -90,6 +85,40 @@ export function SupportThreadCard({
   const onUpdate = (id:string)=>{
 
   }
+
+    const handleOnReact = async(id:string, type:string, onModelType:string)=>{
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_HOST}/community/threads/react/${id}`,
+                {type, onModelType},
+                {withCredentials:true}
+            )
+
+            if(response.data.success){
+                const msg = response.data.message;
+
+            // Use the setter function to trigger a UI re-render
+            setThreadStats((prevStats:any) => {
+                const newStats = { ...prevStats };
+                if (msg === 'Reaction added') {
+                    newStats[`${type}Count`] += 1;
+                } 
+                else if (msg === 'Reaction removed') {
+                    
+                    newStats[`${type}Count`] = Math.max(0, newStats[`${type}Count`] - 1);
+                } 
+                else if (msg === 'Reaction updated') {
+                    
+                    newStats[`${type}Count`] += 1;
+                }
+
+                return newStats;
+            });
+                ToastFunction('success',msg);
+            }
+        } catch (error) {
+            ToastFunction('error', error);
+        }
+    } 
 
   return (
     <motion.div
@@ -131,7 +160,6 @@ export function SupportThreadCard({
                 <DropdownMenuContent align="end" className="w-40">
                 <DropdownMenuItem 
                     onSelect={(e) => {
-                     
                       setSelectedThread({_id, moodLabel, topic, isAnonymous, content})
                     }}
                     className="flex items-center gap-2 cursor-pointer"
@@ -174,35 +202,35 @@ export function SupportThreadCard({
         {/* Interaction Bar */}
         <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
           <button
-            onClick={() => onSupport(_id)}
+            onClick={() => handleOnReact(_id, 'support','Thread')}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition-colors group"
             aria-label="Support this thread"
           >
             <Heart size={18} className="group-hover:text-blue-600 transition-colors" />
             <span className="text-sm font-medium group-hover:text-blue-600 transition-colors">
-              Support ({stats.supportCount})
+              Support ({threadStats.supportCount})
             </span>
           </button>
 
           <button
-            onClick={() => onRelate(_id)}
+            onClick={() => handleOnReact(_id, 'relate','Thread')}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-50 transition-colors group"
             aria-label="Relate to this thread"
           >
             <Users size={18} className="group-hover:text-purple-600 transition-colors" />
             <span className="text-sm font-medium group-hover:text-purple-600 transition-colors">
-              Relate ({stats.relateCount})
+              Relate ({threadStats.relateCount})
             </span>
           </button>
 
           <button
-            onClick={() => onHug(_id)}
+            onClick={() => handleOnReact(_id, 'hug','Thread')}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-rose-50 transition-colors group"
             aria-label="Send a hug"
           >
             <Wind size={18} className="group-hover:text-rose-600 transition-colors" />
             <span className="text-sm font-medium group-hover:text-rose-600 transition-colors">
-              Hug ({stats.hugCount})
+              Hug ({threadStats.hugCount})
             </span>
           </button>
 
@@ -213,7 +241,7 @@ export function SupportThreadCard({
           >
             <MessageCircle size={18} className="group-hover:text-teal-600 transition-colors" />
             <span className="text-sm font-medium group-hover:text-teal-600 transition-colors">
-              ({stats.replyCount})
+              ({threadStats.replyCount})
             </span>
           </button>
         </div>
@@ -240,10 +268,12 @@ export function SupportThreadCard({
           isAnonymous,
           anonymousIdentity,
           user,
-          stats,
           content,
           topic
         }}
+        threadStats={threadStats}
+        setThreadStats={setThreadStats}
+        handleOnReact={handleOnReact}
         />
         
     </motion.div>

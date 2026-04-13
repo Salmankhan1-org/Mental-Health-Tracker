@@ -290,3 +290,16 @@ export interface SelectedThread{
   isAnonymous: boolean,
   content: string
 }
+
+
+export interface ThreadReplies{
+  _id: string,
+  user: ThreadUser;
+  isAnonymous: boolean;
+  anonymousIdentity?: string | null;
+  content: string,
+  stats: ThreadStats,
+  isEdited: boolean,
+  createdAt: Date | string,
+  updatedAt: Date | string
+}

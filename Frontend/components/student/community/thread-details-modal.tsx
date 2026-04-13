@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Heart, Users, Wind, Reply as ReplyIcon } from 'lucide-react'
+import { X, Heart, Users, Wind, Reply as ReplyIcon, Loader2 } from 'lucide-react'
 import { ReplyItem, Reply } from './reply-item'
 import { ReplyInput } from './reply-input'
-import { ThreadStats, ThreadUser } from '@/types/types'
+import { ThreadReplies, ThreadStats, ThreadUser } from '@/types/types'
 import { ToastFunction } from '@/helper/toast-function'
 import axios from 'axios'
+import { IoIosArrowDown } from "react-icons/io";
 
 interface ThreadDetailModalProps {
   isOpen: boolean
@@ -21,8 +22,11 @@ interface ThreadDetailModalProps {
     isMine: boolean,
     anonymousIdentity: string,
     content: string,
-    stats: ThreadStats, 
-  }
+  },
+  threadStats: ThreadStats, 
+  setThreadStats: (updater: (prev: ThreadStats) => ThreadStats) => void
+  handleOnReact: (id:string, type:string, onModelType:string) => void
+
 }
 
 const topicColorMap: Record<string, string> = {
@@ -38,9 +42,38 @@ export function ThreadDetailModal({
   isOpen,
   onClose,
   thread,
+  threadStats,
+  setThreadStats,
+  handleOnReact
 }: ThreadDetailModalProps) {
-  const [replyingToId, setReplyingToId] = useState<string | null>(null)
-  const [threadReplyOpen, setThreadReplyOpen] = useState(false)
+    const [replyingToId, setReplyingToId] = useState<string | null>(null)
+    const [threadReplyOpen, setThreadReplyOpen] = useState(false)
+    const [replies, setReplies] = useState<ThreadReplies[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
+
+    const fetchReplies = async (isInitial = false) => {
+        setLoading(true);
+        try {
+            // Calculate skip based on current replies length
+            const skip = isInitial ? 0 : replies.length;
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_HOST}/community/threads/${thread._id}/replies?skip=${skip}&limit=3`,
+                {withCredentials: true}
+            );
+            
+            if (res.data.success) {
+                setReplies(prev => isInitial ? res.data.data.replies : [...prev, ...res.data.data.replies]);
+                setHasMore(res.data.data.hasMore);
+            }
+        } catch (err) {
+            ToastFunction('error',err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Fetch on mount
+    useEffect(() => { fetchReplies(true); }, [thread._id]);
 
 
     const handleAddReply = async(content:string, isAnonymous:boolean)=>{
@@ -51,15 +84,15 @@ export function ThreadDetailModal({
             );
 
             if(response.data.success){
+                setThreadStats((prev:ThreadStats)=>({...prev, replyCount:prev.replyCount+1}));
+                setReplies(prev=>[response.data.data, ...prev]);
                 ToastFunction('success', response.data.message);
             }
         } catch (error) {
             ToastFunction('error', error);
         }
     }
-    const handleShowReplyForm = (parentId: string) => {
-        setReplyingToId(replyingToId === parentId ? null : parentId)
-    }
+   
 
   return (
     <AnimatePresence>
@@ -140,7 +173,7 @@ export function ThreadDetailModal({
                   {/* Thread Interaction Bar */}
                   <div className="flex items-center gap-3 pt-4 border-t border-gray-100 flex-wrap">
                     <button
-                    //   onClick={onThreadSupport}
+                      onClick={()=>handleOnReact(thread._id, 'support','Thread')}
                       className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition-colors group text-sm"
                     >
                       <Heart
@@ -148,12 +181,12 @@ export function ThreadDetailModal({
                         className="group-hover:text-blue-600 transition-colors"
                       />
                       <span className="group-hover:text-blue-600 transition-colors">
-                        Support ({thread.stats.supportCount})
+                        Support ({threadStats.supportCount})
                       </span>
                     </button>
 
                     <button
-                    //   onClick={onThreadRelate}
+                        onClick={()=>handleOnReact(thread._id, 'relate','Thread')}
                       className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-50 transition-colors group text-sm"
                     >
                       <Users
@@ -161,12 +194,12 @@ export function ThreadDetailModal({
                         className="group-hover:text-purple-600 transition-colors"
                       />
                       <span className="group-hover:text-purple-600 transition-colors">
-                        Relate ({thread.stats.relateCount})
+                        Relate ({threadStats.relateCount})
                       </span>
                     </button>
 
                     <button
-                    //   onClick={onThreadHug}
+                      onClick={()=>handleOnReact(thread._id, 'hug','Thread')}
                       className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-rose-50 transition-colors group text-sm"
                     >
                       <Wind
@@ -174,7 +207,7 @@ export function ThreadDetailModal({
                         className="group-hover:text-rose-600 transition-colors"
                       />
                       <span className="group-hover:text-rose-600 transition-colors">
-                        Hug ({thread.stats.replyCount})
+                        Hug ({threadStats.hugCount})
                       </span>
                     </button>
 
@@ -202,49 +235,82 @@ export function ThreadDetailModal({
                   )}
                 </div>
 
-                {/* Replies Section */}
-                {/* <div className="p-6">
-                  {replies.length > 0 ? (
+                {/* Reply  */}
+               <div className="p-6">
+                {replies.length > 0 ? (
                     <div className="space-y-4">
-                      <h3 className="font-semibold text-gray-900 text-sm mb-4">
+                    {/* Header matching your UI */}
+                    <h3 className="font-semibold text-gray-900 text-sm mb-4">
                         {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
-                      </h3>
-                      {replies.map((reply) => (
-                        <div key={reply.id}>
-                          <ReplyItem
-                            reply={reply}
-                            onReply={(parentId) =>
-                              handleAddReply('', false, parentId)
-                            }
-                            onSupport={onReplySupport}
-                            onShowReplyForm={handleShowReplyForm}
-                            showReplyForm={replyingToId === reply.id}
-                          />
-                          {replyingToId === reply.id && (
+                    </h3>
+
+                    {replies.map((reply) => (
+                        <div key={reply._id || reply._id}>
+                        <ReplyItem
+                            
+                            reply={{
+                            ...reply,
+                            id: reply._id,
+                            author: reply.user?.name || "User",
+                            anonymousIdentity: reply.anonymousIdentity,
+                            timestamp: reply.createdAt,
+                            stats: reply.stats,
+                            }}
+                            // onReply={(content, isAnonymous, replyId) => {
+                            //     handleAddReplyToThreadReply(content, isAnonymous, replyId)
+                            // }}
+                            onSupport={()=>{}}
+                            // onShowReplyForm={handleShowReplyForm}
+                            // showReplyForm={replyingToId === reply._id}
+                        />
+
+
+                        {/* {replyingToId === reply._id && (
                             <ReplyInput
-                              onSubmit={(content, isAnonymous) => {
-                                handleAddReply(content, isAnonymous, reply.id)
-                              }}
-                              onCancel={() => setReplyingToId(null)}
-                              isNested
-                              replyingTo={
+                            onSubmit={(content, isAnonymous) => {
+                                handleAddReplyToThreadReply(content, isAnonymous, reply._id)
+                            }}
+                            onCancel={() => setReplyingToId(null)}
+                            isNested={true}
+                            replyingTo={
                                 reply.isAnonymous
-                                  ? 'Quiet Willow'
-                                  : reply.author
-                              }
+                                ? (reply.anonymousIdentity || 'Quiet Willow')
+                                : reply.user?.name
+                            }
                             />
-                          )}
+                        )} */}
                         </div>
-                      ))}
+                    ))}
+
+                    {/* Show More Button - Preserving Design */}
+                    {hasMore && (
+                        <div className="pt-2 text-center border-t border-gray-100 mt-4">
+                        <button
+                            onClick={() => fetchReplies()}
+                            disabled={loading}
+                            className="text-sm font-medium cursor-pointer text-teal-600 hover:text-teal-700 disabled:text-gray-400 transition-colors py-2"
+                        >
+                            {loading ? (
+                            <span className="flex items-center gap-2 justify-center">
+                                <Loader2 className="h-3 w-3 animate-spin" /> Loading...
+                            </span>
+                            ) : (
+                            <span className='flex gap-1 items-center'>
+                                Show More <IoIosArrowDown/>
+                            </span>
+                            )}
+                        </button>
+                        </div>
+                    )}
                     </div>
-                  ) : (
+                ) : (
                     <div className="text-center py-8">
-                      <p className="text-gray-500">
+                    <p className="text-gray-500 text-sm">
                         No replies yet. Be the first to respond!
-                      </p>
+                    </p>
                     </div>
-                  )}
-                </div> */}
+                )}
+                </div>
               </div>
             </div>
           </motion.div>

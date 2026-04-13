@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, X } from 'lucide-react'
+import { LoadingButton } from '@/components/common/button'
 
 interface ReplyInputProps {
   onSubmit: (content: string, isAnonymous: boolean) => void
@@ -30,6 +31,7 @@ export function ReplyInput({
         setContent('')
         setIsAnonymous(false)
         setIsSubmitting(false)
+        onCancel();
     }
 
   return (
@@ -81,14 +83,16 @@ export function ReplyInput({
               <X size={16} />
               Cancel
             </button>
-            <button
-              onClick={handleSubmit}
-              disabled={!content.trim() || isSubmitting}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 disabled:bg-gray-300 text-white transition-colors text-sm font-medium disabled:cursor-not-allowed"
-            >
-              <Send size={16} />
-              {isSubmitting ? 'Sending...' : 'Reply'}
-            </button>
+            <LoadingButton
+                onClick={handleSubmit}
+                loading={isSubmitting}
+                loadingText="Sending..."
+                icon={<Send size={16} />}
+                disabledConditions={[!content.trim()]}
+                className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-300 text-white transition-colors text-sm font-medium py-1.5 px-3 rounded-lg"
+                >
+                Reply
+            </LoadingButton>
           </div>
         </div>
       </div>

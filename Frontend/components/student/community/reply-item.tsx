@@ -1,16 +1,25 @@
 'use client'
 
+import { ThreadStats } from '@/types/types'
+import axios from 'axios'
+import { formatDistanceToNow } from 'date-fns'
 import { motion } from 'framer-motion'
-import { Heart, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { Heart, MessageCircle, ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { ReplyInput } from './reply-input'
+import { ToastFunction } from '@/helper/toast-function'
+import { RootState } from '@/redux/store'
+import { useSelector } from 'react-redux'
 
 export interface Reply {
   id: string
   author: string
   isAnonymous: boolean
   content: string
-  timestamp: string
-  supportCount: number
+  timestamp: Date | string,
+  anonymousIdentity: string | undefined | null,
+  isEdited: boolean
+  stats: ThreadStats
   parentReplyId?: string // For nested replies
   replies?: Reply[] // Nested replies
 }
@@ -18,10 +27,10 @@ export interface Reply {
 interface ReplyItemProps {
   reply: Reply
   depth?: number
-  onReply: (parentId: string) => void
+//   onReply: (content:string, isAnonymous:boolean, parentId:string) => void
   onSupport: (replyId: string) => void
-  onShowReplyForm: (parentId: string) => void
-  showReplyForm?: boolean
+//   onShowReplyForm: (parentId: string) => void
+//   showReplyForm?: boolean
 }
 
 const getInitial = (name: string) => name.charAt(0).toUpperCase()
@@ -42,13 +51,100 @@ const generateInitialColor = (name: string) => {
 export function ReplyItem({
   reply,
   depth = 0,
-  onReply,
+//   onReply,
   onSupport,
-  onShowReplyForm,
-  showReplyForm = false,
+//   onShowReplyForm,
+//   showReplyForm = false,
 }: ReplyItemProps) {
-  const [showReplies, setShowReplies] = useState(true)
-  const hasReplies = reply.replies && reply.replies.length > 0
+    const [isReplying, setIsReplying] = useState(false);
+    const [showReplies, setShowReplies] = useState(false)
+    const [nestedReplies, setNestedReplies] = useState<Reply[]>(reply.replies || [])
+    const [loading, setLoading] = useState(false)
+
+    const {user} = useSelector((state:RootState)=>state?.auth);
+    
+    const totalReplies = reply.stats?.replyCount || nestedReplies.length
+
+    const handleToggleReplies = async () => {
+    
+        if (showReplies) {
+        setShowReplies(false)
+        return
+        }
+
+        
+        if (nestedReplies.length === 0 && totalReplies > 0) {
+        setLoading(true)
+        try {
+            const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_HOST}/community/threads/replies/${reply.id}/nested`,
+            { withCredentials: true }
+            )
+            if (res.data.success) {
+            
+            const formatted = res.data.data.map((r: any) => ({
+                    id: r.id,
+                    author: r.author || 'User',
+                    content: r.content,
+                    timestamp: r.timestamp,
+                    isAnonymous: r.isAnonymous,
+                    anonymousIdentity: r.anonymousIdentity,
+                    isEdited: r.isEdited,
+                    supportCount: r.stats?.supportCount || 0,
+                    stats: r.stats
+            }))
+            setNestedReplies(formatted)
+
+            
+            }
+        } catch (error) {
+            console.error("Failed to fetch nested replies:", error)
+        } finally {
+            setLoading(false)
+        }
+        }
+
+        setShowReplies(true)
+    }
+
+    const handleAddNestedReply = async(content:string, isAnonymous:boolean)=>{
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_HOST}/community/threads/reply/${reply.id}`,
+                {content, isAnonymous},
+                {withCredentials: true}
+            );
+
+            if(response.data.success){
+                const newReply = response.data.data;
+      
+                // 1. Format the new reply to match your Reply interface
+                const formattedReply: Reply = {
+                    id: newReply._id,
+                    author: (isAnonymous ? (newReply.anonymousIdentity || 'Quiet Willow') : user?.name),
+                    content: newReply.content,
+                    timestamp: newReply.createdAt,
+                    isAnonymous: newReply.isAnonymous,
+                    anonymousIdentity: newReply.anonymousIdentity,
+                    isEdited: false,
+                    stats: newReply.stats
+                };
+
+                // 2. Update local state immediately
+                setNestedReplies(prev => [formattedReply, ...prev]);
+
+                console.log('After adding second level Nesting:',nestedReplies);
+                
+                // 3. UI Enhancements
+                setShowReplies(true); // Ensure they are visible
+                setIsReplying(false); // Close input
+                ToastFunction('success', response.data.message);
+                
+            }
+        } catch (error) {
+            ToastFunction('error',error);
+        }
+    }
+
 
   return (
     <motion.div
@@ -67,22 +163,27 @@ export function ReplyItem({
           {reply.isAnonymous ? 'A' : getInitial(reply.author)}
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
           {/* Header */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold text-gray-900 text-sm">
-              {reply.isAnonymous ? 'Quiet Willow' : reply.author}
+              {reply.isAnonymous ? (reply.anonymousIdentity || 'Quiet Willow') : reply.author}
             </span>
             {reply.isAnonymous && (
               <span className="inline-block px-1.5 py-0.5 rounded text-gray-600 text-xs bg-gray-100">
                 Anonymous
               </span>
             )}
-            <span className="text-gray-500 text-xs">{reply.timestamp}</span>
+            <span className="text-gray-500 text-xs">
+              {formatDistanceToNow(new Date(reply.timestamp), { addSuffix: true })}
+            </span>
+            {reply.isEdited && (
+              <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">
+                Edited
+              </span>
+            )}
           </div>
 
-          {/* Reply Text */}
           <p className="text-gray-700 text-sm mt-2 leading-relaxed">
             {reply.content}
           </p>
@@ -93,57 +194,78 @@ export function ReplyItem({
               onClick={() => onSupport(reply.id)}
               className="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors text-xs font-medium group"
             >
-              <Heart
-                size={14}
-                className="group-hover:fill-blue-600 transition-colors"
-              />
-              <span className="group-hover:text-blue-600 transition-colors">
-                {reply.supportCount}
-              </span>
+              <Heart size={14} className="group-hover:fill-blue-600 transition-colors" />
+              <span>{reply.stats.supportCount}</span>
             </button>
 
-            <button
-              onClick={() => onShowReplyForm(reply.id)}
-              className="flex items-center gap-1 text-gray-600 hover:text-teal-600 transition-colors text-xs font-medium group"
-            >
-              <MessageCircle size={14} className="group-hover:text-teal-600" />
-              <span>Reply</span>
-            </button>
+            {depth < 2 && (
+                <button
+                onClick={() =>setIsReplying(true)}
+                className="flex items-center gap-1 text-gray-600 hover:text-teal-600 transition-colors text-xs font-medium group"
+                >
+                <MessageCircle size={14} className="group-hover:text-teal-600" />
+                <span>Reply</span>
+                </button>
+            )}
           </div>
 
-          {/* Nested Replies Toggle */}
-          {hasReplies && (
+          {/* Nested Replies Toggle - Now using dynamic stats */}
+          {totalReplies > 0 && (
             <button
-              onClick={() => setShowReplies(!showReplies)}
-              className="flex items-center gap-1 text-teal-600 hover:text-teal-700 transition-colors text-xs font-medium mt-3"
+              onClick={handleToggleReplies}
+              disabled={loading}
+              className="flex items-center gap-1 text-teal-600 hover:text-teal-700 transition-colors text-xs font-semibold mt-3 disabled:text-gray-400"
             >
-              {showReplies ? (
+              {loading ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : showReplies ? (
                 <ChevronUp size={14} />
               ) : (
                 <ChevronDown size={14} />
               )}
               <span>
-                {showReplies ? 'Hide' : 'Show'} {reply.replies?.length} repl
-                {reply.replies?.length === 1 ? 'y' : 'ies'}
+                {loading 
+                  ? 'Loading...' 
+                  : `${showReplies ? 'Hide' : 'Show'} ${totalReplies} ${totalReplies === 1 ? 'reply' : 'replies'}`
+                }
               </span>
             </button>
           )}
 
-          {/* Nested Replies */}
-          {showReplies && hasReplies && (
-            <div className="mt-4 space-y-2">
-              {reply.replies?.map((nestedReply) => (
-                <ReplyItem
-                  key={nestedReply.id}
-                  reply={nestedReply}
-                  depth={depth + 1}
-                  onReply={onReply}
-                  onSupport={onSupport}
-                  onShowReplyForm={onShowReplyForm}
-                />
-              ))}
-            </div>
+
+          {isReplying && (
+            <ReplyInput
+            onSubmit={(content, isAnonymous) => {
+                handleAddNestedReply(content, isAnonymous)
+            }}
+            onCancel={() => setIsReplying(false)}
+            isNested={true}
+            replyingTo={
+                reply.isAnonymous
+                ? (reply.anonymousIdentity || 'Quiet Willow')
+                : reply.author
+            }
+            />
           )}
+
+          {/* Nested Replies Rendering */}
+          {depth < 2 && showReplies && nestedReplies.length > 0 && (
+            <div className="mt-4 space-y-2">
+                {nestedReplies.map((nestedReply) => (
+                
+                <div key={nestedReply.id}> 
+                    <ReplyItem
+                    reply={nestedReply}
+                    depth={depth + 1}
+                    // onReply={onReply}
+                    onSupport={onSupport}
+                    // onShowReplyForm={onShowReplyForm}
+                    // showReplyForm={showReplyForm} 
+                    />
+                </div>
+                ))}
+            </div>
+            )}
         </div>
       </div>
     </motion.div>
