@@ -11,6 +11,7 @@ const { GetThreadRepliesController } = require('../../controllers/Community/get.
 const { ReactOnThreadOrReplyController } = require('../../controllers/Community/create.thread.reaction.controller');
 const { CreateReplyForThreadReplyController } = require('../../controllers/Community/create.reply.on.thread.reply.controller');
 const { GetNestedRepliesController } = require('../../controllers/Community/get.nested.replies.controller');
+const { DeleteThreadReplyController } = require('../../controllers/Community/delete.thread.reply.controller');
 const router = express.Router();
 
 
@@ -36,6 +37,11 @@ router.post('/threads/react/:reactedId',
 router.post('/threads/reply/:replyId',
     isAuthenticated,
     CreateReplyForThreadReplyController
+)
+
+router.delete('/threads/reply/:replyId',
+    isAuthenticated,
+    DeleteThreadReplyController
 )
 
 // Get nested replies

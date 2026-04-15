@@ -25,6 +25,24 @@ exports.CreateReplyForThreadReplyController = async (request, response) => {
             });
         }
 
+        // Check if maximum depth has reached or not, max is 3
+        if(parentReplyDoc.parentReply){
+            const grandParent = await ThreadReply.findById(parentReplyDoc.parentReply).select('_id');
+            if(grandParent && grandParent.parentReply){
+                return response.status(400).json({
+                    statusCode: 400,
+                    success: false,
+                    error:[
+                        {
+                            field: 'threadReply',
+                            message: 'Maximum Nesting Depth has reached'
+                        }
+                    ],
+                    message: ''
+                })
+            }
+        }
+
         // 2. Validate Content
         if (!content?.trim()) {
             return response.status(400).json({

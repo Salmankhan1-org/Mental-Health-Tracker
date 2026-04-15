@@ -34,6 +34,7 @@ exports.ReactOnThreadOrReplyController = async (request, response) => {
         const TargetModel = onModelType === 'Thread' ? Thread : ThreadReply;
         let message = '';
         let statusCode = 200;
+        let userReaction;
 
         if (existingReaction) {
             if (existingReaction.type === type) {
@@ -45,6 +46,7 @@ exports.ReactOnThreadOrReplyController = async (request, response) => {
                     $inc: { [`stats.${type}Count`]: -1 }
                 });
                 
+                userReaction = null;
                 message = 'Reaction removed';
             } else {
                 // SWITCH: Change reaction type
@@ -60,6 +62,7 @@ exports.ReactOnThreadOrReplyController = async (request, response) => {
                     }
                 });
                 
+                userReaction = type;
                 message = 'Reaction updated';
             }
         } else {
@@ -76,6 +79,7 @@ exports.ReactOnThreadOrReplyController = async (request, response) => {
                 $inc: { [`stats.${type}Count`]: 1 }
             });
 
+            userReaction = type;
             statusCode = 201;
             message = 'Reaction added';
         }
@@ -84,6 +88,7 @@ exports.ReactOnThreadOrReplyController = async (request, response) => {
             statusCode,
             success: true,
             error:[],
+            data: userReaction,
             message
         });
 

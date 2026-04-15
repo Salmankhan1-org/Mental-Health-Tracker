@@ -61,6 +61,10 @@ const replySchema = new Schema(
         isEdited: {
             type: Boolean,
             default: false
+        },
+        isMine:{
+            type: Boolean,
+            default: false
         }
     },
     { timestamps: true }

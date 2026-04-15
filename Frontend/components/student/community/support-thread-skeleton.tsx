@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function SupportThreadSkeleton() {
   return (
@@ -33,5 +33,5 @@ export function SupportThreadSkeleton() {
         <Skeleton className="h-9 w-12 rounded-lg" />
       </div>
     </div>
-  )
+  );
 }

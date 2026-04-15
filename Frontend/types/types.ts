@@ -250,7 +250,7 @@ export interface ThreadStats {
   relateCount: number;
   hugCount: number;
   replyCount: number;
-  viewCount: number;
+  userReaction: 'support' | 'hug' | 'relate' | null
 }
 
 export interface ThreadAI {
@@ -299,6 +299,7 @@ export interface ThreadReplies{
   anonymousIdentity?: string | null;
   content: string,
   stats: ThreadStats,
+  isMine: boolean
   isEdited: boolean,
   createdAt: Date | string,
   updatedAt: Date | string

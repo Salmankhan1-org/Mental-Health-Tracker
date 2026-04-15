@@ -1,3 +1,4 @@
+const mongoose  = require("mongoose");
 const Appointment = require("../../../models/Counsellors/appointment.model");
 const User = require("../../../models/User/userModel");
 const { GetUserId } = require("../../../utils/User/get.user.id");
@@ -11,7 +12,7 @@ exports.GetAppointmentsUsingStatusController = async (request, response) => {
             const skip = (parseInt(page) - 1) * parseInt(limit);
 
             let query = { 
-                counsellor: userId, 
+                counsellor: new mongoose.Types.ObjectId(userId), 
                 status 
             };
 
@@ -23,7 +24,7 @@ exports.GetAppointmentsUsingStatusController = async (request, response) => {
                 
                 query.date = searchDate
 
-                //console.log("Searching between:", dayStart.toISOString(), "and", dayEnd.toISOString());
+               
             }
 
             if (name) {
@@ -36,15 +37,47 @@ exports.GetAppointmentsUsingStatusController = async (request, response) => {
                 query.student = { $in: studentIds };
             }
 
-        
+            const parsedLimit = parseInt(limit);
+
+            // pipelines for better optimization 
+            const pipeline = [
+                // match the query
+                {
+                    $match: query
+                },
+                {
+                    $sort:{ date : -1 , startTime : -1 }
+                },
+                {$skip:skip},
+                {$limit:parsedLimit},
+                {
+                    $lookup:{
+                        from:'users',
+                        let: {studentId: '$student'},
+                        pipeline:[
+                            {
+                                $match:{
+                                    $expr: { $eq: ['$_id', '$$studentId'] }
+                                }
+                            },
+                            {
+                                $project:{
+                                    _id:1,
+                                    name: 1,
+                                    email:1
+                                }
+                            }
+                        ],
+                        as: 'student'
+                    }
+                },
+                {$unwind:{path:'$student', preserveNullAndEmptyArrays:true}},
+            ];
+
             const [appointments, total] = await Promise.all([
-                Appointment.find(query)
-                    .populate('student', 'name email')
-                    .sort({ date: -1, startTime: -1 })
-                    .skip(skip)
-                    .limit(parseInt(limit)),
+                Appointment.aggregate(pipeline),
                 Appointment.countDocuments(query)
-            ]);
+            ])
 
             response.status(200).json({
                 statusCode: 200,
