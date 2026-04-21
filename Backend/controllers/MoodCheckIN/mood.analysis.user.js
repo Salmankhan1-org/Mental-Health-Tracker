@@ -11,7 +11,7 @@ exports.CompleteMoodSessionController = async (request, response) => {
         const userId = GetUserId(request)
         const { moodEntryId, answers } = request.body
 
-        request.body.email = GetUserEmail(reuqest);
+        request.body.email = GetUserEmail(request);
 
         if (!moodEntryId || !Array.isArray(answers)) {
             return response.status(400).json({
@@ -113,7 +113,7 @@ exports.CompleteMoodSessionController = async (request, response) => {
         await redisClient.del(`weekly-sentiment-data:${userId}`)
         await redisClient.del(`weekly-Mood-chart-data:${userId}`)
 
-        await LogController(request, "api:mood-check-in", "failed", "Failed to detect mood");
+        await LogController(request, "Mood Check In", "success", "Your mood has been analyzed");
 
         return response.status(201).json({
             statusCode: 201,

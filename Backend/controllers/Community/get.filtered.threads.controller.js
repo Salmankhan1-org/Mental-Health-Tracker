@@ -80,15 +80,15 @@ exports.GetFilteredThreadsController = async (request, response) => {
                 let: { threadId: "$_id" },
                 pipeline: [
                     {
-                    $match: {
-                        $expr: {
-                        $and: [
-                            { $eq: ["$reactedId", "$$threadId"] },
-                            { $eq: ["$user", userId] },
-                            { $eq: ["$onModel", "Thread"] }
-                        ]
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$reactedId", "$$threadId"] },
+                                    { $eq: ["$user", userId] },
+                                    { $eq: ["$onModel", "Thread"] }
+                                ]
+                            }
                         }
-                    }
                     },
                     { $project: { type: 1, _id: 0 } }
                 ],
@@ -99,19 +99,16 @@ exports.GetFilteredThreadsController = async (request, response) => {
             //  Extract reaction
             {
                 $addFields: {
-                "stats.userReaction": {
-                    $ifNull: [
-                    { $arrayElemAt: ["$userReactionData.type", 0] },
-                    null
-                    ]
-                }
+                    "stats.userReaction":{
+                        $first:'$userReactionData.type'
+                    }
                 }
             },
 
             //  Cleanup
             {
                 $project: {
-                userReactionData: 0
+                    userReactionData: 0
                 }
             }
         ]);

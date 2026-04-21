@@ -36,9 +36,24 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' ? process.env.CLOUD_FRONTEND_URL : process.env.FRONTEND_URL,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    const isLocalhost = /^http:\/\/localhost:\d+$/.test(origin);
+
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+      process.env.CLOUD_FRONTEND_URL,
+    ];
+
+    if (isLocalhost || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 }));
 
 app.get("/api/health", (request, response) =>{

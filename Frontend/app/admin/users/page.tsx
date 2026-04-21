@@ -49,7 +49,7 @@ export default function UsersPage() {
                 { 
                     params: {
                         page,
-                        limit: 5,
+                        limit: 6,
                         search: searchTerm,
                         role: filterRole,
                         status: filterStatus // New field added

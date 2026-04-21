@@ -20,6 +20,7 @@ const { AuthorizeAdmin } = require('../../middlewares/auth.admin');
 const { FilterCounsellorsValidator } = require('../../validators/Counsellor/filter.counsellor.validator');
 const { UpdateCounsellorStatusController } = require('../../controllers/Counsellors/CounsellorController/update.counsellor.status');
 const { UpdateCounsellorStatusValidator } = require('../../validators/Counsellor/update.counsellor.status');
+const { GetTopTitlesController } = require('../../controllers/Counsellors/CounsellorController/get,top.trending.counsellor.titles.controller');
 const router =  express.Router({});
 
 
@@ -46,6 +47,11 @@ router.put('/me/update',
     UpdateCounsellorValidator,
     Validate,
     UpdateCounsellorDetailsController
+)
+
+router.get('/trending/titles',
+    isAuthenticated,
+    GetTopTitlesController
 )
 
 router.get('/dashboard/stats', 

@@ -79,18 +79,18 @@ export default function CounselorsPage() {
           </div>
 
           {/* Main content */}
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2" id="counselors">
-              <h2 className="mb-6 text-xl font-semibold text-foreground" style={{ fontFamily: "var(--font-display)" }}>
-                Available Counselors
-              </h2>
-              <CounselorList />
-            </div>
+        
+          <div  id="counselors">
+            <h2 className="mb-4 text-xl font-semibold text-foreground" style={{ fontFamily: "var(--font-display)" }}>
+              Available Counselors
+            </h2>
+            <CounselorList />
+          </div>
 
-            <div className="flex flex-col gap-6">
+            {/* <div className="flex flex-col gap-6">
               <SeverityAssessment />
 
-              {/* Emergency contact */}
+             
               <div className="rounded-2xl bg-primary p-6 text-primary-foreground">
                 <h3 className="mb-2 text-lg font-semibold">
                   Crisis Support
@@ -122,8 +122,8 @@ export default function CounselorsPage() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> */}
+     
         </div>
       </main>
       <Footer />
