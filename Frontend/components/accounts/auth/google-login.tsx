@@ -43,6 +43,7 @@ function GoogleLogin() {
         if (userData.role === "student") {
            if(!userData?.onboardingCompleted){
             router.push("/onboarding")
+            return;
            }
            router.push("/student/dashboard");
         } else if (userData.role === "counsellor") {

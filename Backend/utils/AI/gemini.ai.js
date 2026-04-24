@@ -14,7 +14,6 @@ exports.generateUsingAI = async(prompt, isParse=false) => {
 
     const rawText = response.candidates[0]?.content.parts[0]?.text;
 
-
     // Remove markdown if Gemini adds it
     const cleanText = rawText
     .replace(/```json/g, "")
